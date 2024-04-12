@@ -1,0 +1,115 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.login{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 40rem;
+}
+.lmain{
+    position: absolute;
+}
+.logoa1 {
+    padding: 1rem;
+}
+.c3 {
+    border: 0.1rem solid #e1e8dd;
+    border-radius: 0.1rem;
+    display: flex;
+    margin: 1.5em 3.1em 0 3.1em;
+    align-items: center;
+    border-radius: 0.4rem;
+}
+.c3 input {
+    border: 1px solid lightgray;
+    padding: 0.5rem 8.9rem 0.5rem 2.5rem;
+    border-radius: 0.3rem;
+}
+.c4 {
+    position: absolute;  
+    padding: 0.3rem;
+}
+.log2 {
+    border: 0.01rem solid #e1e8dd;
+    border-radius: 0.5rem;
+    width: 510px;
+    margin-block-start: 3.8rem;
+}
+.log3 {
+    text-align: center;
+    padding: 39px 30px;
+}
+.log4 {
+    font-size: 28px;
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
+}
+.conti {
+    padding: 7px 100px;
+    font-size: 17px;
+    border-radius: 50px;
+    margin-top: 1rem;
+    border: none;
+    background-color: #108a00;
+    color: white;
+}
+.conti:hover {
+    background-color: #3ca002;
+}
+.log5 {
+    text-align: center;
+    padding: 0px 30px;
+    margin-top: -7%;
+}
+.hr {
+    width: 78%;
+    margin-block-start: 2em;
+    border: 0.1px solid #e0e0e0;
+    margin-left: 11%;
+}
+#or {
+    background-color: white;
+    width: 8%;
+    margin: -0.9em 0em 1.5em 11.5em;
+    font-size: 18px;
+}
+.google {
+    display: flex;
+    background-color: #4285f4;
+    border-radius: 20px;
+    width: 78%;
+    margin: 0 0 2rem 11%;
+}
+.google1 {
+    width: 32px;
+    border-radius: 50px;
+}
+.google2 {
+    width: 78%;
+    font-size: 16px;
+    border: none;
+    background-color: #4285f4;
+    color: white;
+    cursor: pointer;
+}
+.signin_btn{
+    border: 2px solid #108A00;
+    border-radius: 10rem;
+    color: #108A00;
+    padding: 0.4rem 4rem;
+    margin-bottom: 2rem;
+    font-size: 17px;
+    background-color: white;
+}
+.signin_btn{
+    cursor: pointer;
+}
+
+@media (max-width: 1441px) {
+    .c3 input {
+        padding: 0.7rem 9.45rem 0.7rem 2rem;
+    }
+}

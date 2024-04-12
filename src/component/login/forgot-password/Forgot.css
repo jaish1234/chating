@@ -1,0 +1,78 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.fl1{
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+}
+.fl2 a{color: #108a00;}
+.fl2{text-align: right;}
+.fl3{
+    display: flex;
+    justify-content: center;
+    padding-top: 3.5rem;
+}
+.fl4{
+    padding: 1.5rem;
+    border: 1px solid #e1e8dd;
+    border-radius: 0.7rem;
+    text-align: center;
+}
+.imgup{width: 12rem;}
+.fp1{
+    text-align: center;
+    font-size: 1.8rem;
+    font-weight: 500;
+}
+.fp2{
+    padding: 1.5rem 0rem 1rem 1rem;
+    text-align: left;
+    font-size: 1.05rem;
+    width: 90%;
+}
+.fl6{
+    padding: 0rem 0rem 0rem 1rem;
+    display: block;
+    text-align: left;
+}
+.c6{padding: 0.7rem 0rem;}
+.c6 input{padding: 0.7rem 14rem 0.7rem 1rem;border-radius: 8px; border: 2px solid #e1e8dd;}
+.fl7{
+    margin: 3% 12%;
+}
+.fl8{
+    display: flex;
+}
+.fl9{
+    align-items: center;
+    margin: 2.6em 0rem -1rem 0rem;
+    justify-content: right;
+}
+.fl9 a{color: green;padding-right: 1rem;}
+
+@media(max-width:426px){
+    .fl4{border: none;}
+    .fl2{display: none;}
+    .btn1{
+        font-size: 1rem;
+        padding: 0.5rem 1.5rem;
+    }
+    .c6 input{
+        padding: 0.7rem 10rem 0.7rem 1rem;
+    }
+    .fl7{
+        margin-left: 5.5%;
+    }
+}
+@media(max-width: 321px){
+    .c6 input{
+        padding: 0.7rem 7rem 0.7rem 1rem;
+    }
+    .fl7{
+        margin-left: 0%;
+    }
+}
+
