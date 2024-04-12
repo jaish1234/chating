@@ -1,15 +1,6 @@
 import React, { useState } from "react";
 import "./Signup.css";
-import {
-  Box,
-  FormControl,
-  IconButton,
-  InputAdornment,
-  OutlinedInput,
-  TextField,
-  Avatar,
-  Stack,
-} from "@mui/material";
+import { Box, FormControl, IconButton, InputAdornment, OutlinedInput, TextField, Avatar, Stack} from "@mui/material";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
@@ -100,6 +91,14 @@ function Signup() {
         .post("http://192.168.29.203:8080/v1/register/user", formData)
         .then((response) => {
           console.log("response", response);
+          setValues({
+            username: "",
+            email: "",
+            phone: "",
+            password: "",
+            conpassword: "",
+            profilePicture: null,
+          });
         })
         .catch((error) => {
           console.log("error", error);
@@ -109,8 +108,6 @@ function Signup() {
     } else {
       console.log("validation fails, Error");
     }
-
-    setValues({...values, [e.target.name]: ""})
   }
 
   return (
@@ -264,7 +261,7 @@ function Signup() {
             </button>
             <ToastContainer
               position="top-center"
-              autoClose={5000}
+              autoClose={4000}
               closeOnClick
               rtl={false}
             />

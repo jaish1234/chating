@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./Login1.css";
 import {
-  FormControl,
+  FormControl,  
   IconButton,
   InputAdornment,
   OutlinedInput,
@@ -58,7 +58,7 @@ function Login1() {
     }
 
     if(checked){
-      localStorage.setItem("email", value1.email)
+      localStorage.setItem("email", value1.email)  
       localStorage.setItem("password", value1.password)
       localStorage.setItem("Rememberme", true)
     } else{
