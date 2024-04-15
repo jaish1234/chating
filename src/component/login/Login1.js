@@ -30,7 +30,8 @@ function Login1() {
   // Firebase state
   const [value, setValue] = useState("");
   // const [loginError, setLoginError] = useState("");
-  const [checked, setChecked] = useState(false)
+  const [checked, setChecked] = useState(false);
+  const navigate = useNavigate();
 
   function Hchange(e) {
     setvalue1({ ...value1, [e.target.name]: e.target.value });
@@ -140,7 +141,7 @@ function Login1() {
     }
   };
   // console.log("value1", value1);
-  const Signpage = useNavigate();
+  
   return (
     <>
       <div className="login">
@@ -224,7 +225,7 @@ function Login1() {
               </div>
               <button
                 className="signin_btn"
-                onClick={() => Signpage("/signup")}
+                onClick={() => navigate("/signup")}
               >
                 Sign up
               </button>

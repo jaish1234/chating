@@ -4,9 +4,10 @@ import { Box, FormControl, IconButton, InputAdornment, OutlinedInput, TextField,
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import { Link } from "react-router-dom";
+import { useNavigate} from "react-router-dom";
 import profile from "../../assets/img/profile.webp";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -16,6 +17,7 @@ function Signup() {
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConPassword, setShowConPassword] = useState(false);
+  const navigate = useNavigate()
 
   // console.log("values", values);
   function handleOnChange(e) {
@@ -99,6 +101,7 @@ function Signup() {
             conpassword: "",
             profilePicture: null,
           });
+          navigate("/dashboard")
         })
         .catch((error) => {
           console.log("error", error);
