@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./Login1.css";
 import {
-  FormControl,  
+  FormControl,
   IconButton,
   InputAdornment,
   OutlinedInput,
@@ -12,32 +12,39 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import google from "../../assets/img/google.png";
 import { auth, provider } from "./Loginconfig";
 import { signInWithPopup } from "firebase/auth";
-import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-
+import FormGroup from "@mui/material/FormGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 import axios from "axios";
 
 function Login1() {
-  // password
-  const [showPassword, setShowPassword] = React.useState(false);
-  //login button throw login to validation
-  const [value1, setvalue1] = useState({});
-  const [errors, seterror] = useState({});
-  // Firebase state
-  const [value, setValue] = useState("");
-  // const [loginError, setLoginError] = useState("");
-  const [checked, setChecked] = useState(false)
+  
+  const [showPassword, setShowPassword] = useState(false); // password
+  const [value1, setvalue1] = useState({}); //login button throw login to validation
+  const [errors, seterror] = useState({}); //login button throw login to validation
+  const [value, setValue] = useState(""); // Firebase state
+  const [checked, setChecked] = useState(false);
 
-  function Hchange(e) {
+    // Remember functionality
+    useEffect(() => {
+      const email = localStorage.getItem("email");
+      const password = localStorage.getItem("password");
+      const rememberMe = localStorage.getItem("Rememberme") === "true";
+  
+      if (rememberMe && email && password) {
+        setvalue1({ email, password });
+        setChecked(true);
+      }
+    }, []);
+
+  const HandleOnChange = (e) => {
     setvalue1({ ...value1, [e.target.name]: e.target.value });
     seterror({ ...errors, [e.target.name]: "" });
   }
 
-  const validate = () => {
+  const Validate = () => {
     let errors = {};
     const mailregex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
     const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{8,}$/;
@@ -57,39 +64,29 @@ function Login1() {
         "Password must meet criteria: password must be more than 8 char least one uppercase letter, one lowercase letter, one number, and one special character";
     }
 
-    if(checked){
-      localStorage.setItem("email", value1.email)  
-      localStorage.setItem("password", value1.password)
-      localStorage.setItem("Rememberme", true)
-    } else{
-      localStorage.setItem("Rememberme", false)
+    // Remember functionality
+    if (checked) {
+      localStorage.setItem("email", value1.email);
+      localStorage.setItem("password", value1.password);
+      localStorage.setItem("Rememberme", true);
+    } else {
+      localStorage.setItem("Rememberme", false);
     }
 
     seterror(errors);
     return Object.keys(errors).length === 0;
   };
 
-  // Remember functionality
-  useEffect(() => {
-    const email = localStorage.getItem("email");
-    const password = localStorage.getItem("password");
-    const rememberMe = localStorage.getItem("Rememberme") === "true";
-
-    if (rememberMe && email && password) {
-      setvalue1({ email, password });
-      setChecked(true);
-    }
-  }, []);
-  
   // Firebase -> Continue with Google
-  const handClick = (e) => {
+  const handleClick = (e) => {
     signInWithPopup(auth, provider)
-      .then((data) => {
-        const userUid = data.user;
+      .then((result) => {
+        const userUid = result.user;
         setValue(userUid);
         const uid = userUid.uid;
         localStorage.setItem("uid", uid);
         console.log("uiddata", uid);
+        // const userEmail = userUid.email;
 
         const uid1 = {
           uid: uid,
@@ -108,15 +105,15 @@ function Login1() {
       });
   };
 
-  const logout = () => {
+  const handleLogout = () => {
     localStorage.clear();
     window.location.reload();
   };
 
   // login api calling
-  const hsubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validate()) {
+    if (Validate()) {
       const body = {
         email: value1?.email,
         password: value1?.password,
@@ -130,7 +127,7 @@ function Login1() {
         })
         .catch((err) => {
           console.log(err);
-          // signup error set 
+          // signup error set
           setValue("Login failed. Please check your credentials.");
         });
       toast("Useer logged in Successfully");
@@ -139,22 +136,23 @@ function Login1() {
       console.log("validation fails, Error", errors);
     }
   };
-  // console.log("value1", value1);
+  
   const Signpage = useNavigate();
+  
   return (
     <>
       <div className="login">
         <div className="lmain">
           <div className="log2">
             <div className="log3">
-              <form action="" onSubmit={(e) => hsubmit(e)}>
+              <form action="" onSubmit={(e) => handleSubmit(e)}>
                 <p className="log4">Login</p>
                 <div className="c3">
                   <div className="c4">
                     <span class="material-symbols-outlined">person</span>
                   </div>
                   <input
-                    onChange={Hchange}
+                    onChange={HandleOnChange}
                     value={value1?.email}
                     name="email"
                     placeholder="enter youre Email"
@@ -171,7 +169,7 @@ function Login1() {
                     sx={{ height: "2.1rem" }}
                     value={value1?.password}
                     name="password"
-                    onChange={Hchange}
+                    onChange={HandleOnChange}
                     type={showPassword ? "text" : "password"}
                     endAdornment={
                       <InputAdornment position="end">
@@ -188,8 +186,12 @@ function Login1() {
                   <p style={{ color: "red" }}>{errors?.password}</p>
                 )}
 
-                <FormGroup sx={{margin: '1rem 0 0 3rem'}}>
-                  <FormControlLabel control={<Checkbox checked={checked} />} onChange={(e) => setChecked(e.target.checked)} label="Remember Me"/>
+                <FormGroup sx={{ margin: "1rem 0 0 3rem" }}>
+                  <FormControlLabel
+                    control={<Checkbox checked={checked} />}
+                    onChange={(e) => setChecked(e.target.checked)}
+                    label="Remember Me"
+                  />
                 </FormGroup>
 
                 <button className="conti" type="submit">
@@ -213,11 +215,11 @@ function Login1() {
                 <img className="google1" src={google} alt="not found" />
 
                 {value ? (
-                  <button onClick={logout} className="google2" type="button">
+                  <button onClick={handleLogout} className="google2" type="button">
                     Logout
                   </button>
                 ) : (
-                  <button type="button" onClick={handClick} className="google2">
+                  <button type="button" onClick={handleClick} className="google2">
                     Continue with Google
                   </button>
                 )}
