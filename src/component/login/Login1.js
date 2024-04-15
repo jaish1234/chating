@@ -26,19 +26,21 @@ function Login1() {
   const [errors, seterror] = useState({}); //login button throw login to validation
   const [value, setValue] = useState(""); // Firebase state
   const [checked, setChecked] = useState(false);
-
-    // Remember functionality
-    useEffect(() => {
-      const email = localStorage.getItem("email");
-      const password = localStorage.getItem("password");
-      const rememberMe = localStorage.getItem("Rememberme") === "true";
   
-      if (rememberMe && email && password) {
-        setvalue1({ email, password });
-        setChecked(true);
-      }
-    }, []);
-
+  // Remember functionality
+  useEffect(() => {
+    const email = localStorage.getItem("email");
+    const password = localStorage.getItem("password");
+    const rememberMe = localStorage.getItem("Rememberme") === "true";
+    
+    if (rememberMe && email && password) {
+      setvalue1({ email, password });
+      setChecked(true);
+    }
+  }, []);
+  
+  const Signpage = useNavigate();
+  
   const HandleOnChange = (e) => {
     setvalue1({ ...value1, [e.target.name]: e.target.value });
     seterror({ ...errors, [e.target.name]: "" });
@@ -136,8 +138,7 @@ function Login1() {
       console.log("validation fails, Error", errors);
     }
   };
-  
-  const Signpage = useNavigate();
+
   
   return (
     <>
