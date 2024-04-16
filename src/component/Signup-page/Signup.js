@@ -19,8 +19,7 @@ function Signup() {
   const [showConPassword, setShowConPassword] = useState(false);
   const navigate = useNavigate()
 
-  // console.log("values", values);
-  function handleOnChange(e) {
+  const handleOnChange = (e) => {
     const { name, value, files } = e.target;
     if (name === "profilePicture") {
       setValues({ ...values, [name]: files[0] });
@@ -30,7 +29,7 @@ function Signup() {
     setErrors({ ...errors, [name]: "" });
   }
 
-  function validation() {
+  const Validation = () => {
     let error = {};
     const mailregex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
     const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{8,}$/;
@@ -70,7 +69,7 @@ function Signup() {
     return Object.keys(error).length === 0;
   }
 
-  function handlekeyDown(e) {
+  const handleKeyDown = (e) => {
     const key = e.key;
     const phoneregex = /[0-9]|Backspace|Delete/;
     if (!phoneregex.test(key)) {
@@ -78,9 +77,9 @@ function Signup() {
     }
   }
 
-  async function handleSubmit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validation()) {
+    if (Validation()) {
       const formData = new FormData();
       formData.append("username", values.username);
       formData.append("email", values.email);
@@ -202,7 +201,7 @@ function Signup() {
                   "& input": { height: "5px" },
                 }}
                 variant="outlined"
-                onKeyDown={(e) => handlekeyDown(e)}
+                onKeyDown={(e) => handleKeyDown(e)}
               />
               {errors?.phone && <p style={{ color: "red" }}>{errors?.phone}</p>}
 

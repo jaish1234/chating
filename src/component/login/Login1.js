@@ -18,35 +18,31 @@ import Checkbox from "@mui/material/Checkbox";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
+import {createDeviceToken} from "../token/CreateToken"
 
 function Login1() {
-  // password
   const [showPassword, setShowPassword] = React.useState(false);
-  //login button throw login to validation
   const [value1, setvalue1] = useState({});
   const [errors, seterror] = useState({});
-  // Firebase state
   const [value, setValue] = useState("");
-  // const [loginError, setLoginError] = useState("");
   const [checked, setChecked] = useState(false);
   const navigate = useNavigate();
 
-    // Remember functionality
-    useEffect(() => {
-      const email = localStorage.getItem("email");
-      const password = localStorage.getItem("password");
-      const rememberMe = localStorage.getItem("Rememberme") === "true";
-  
-      if (rememberMe && email && password) {
-        setvalue1({ email, password });
-        setChecked(true);
-      }
-    }, []);
+  useEffect(() => {
+    const email = localStorage.getItem("email");
+    const password = localStorage.getItem("password");
+    const rememberMe = localStorage.getItem("Rememberme") === "true";
+
+    if (rememberMe && email && password) {
+      setvalue1({ email, password });
+      setChecked(true);
+    }
+  }, []);
 
   const HandleOnChange = (e) => {
     setvalue1({ ...value1, [e.target.name]: e.target.value });
     seterror({ ...errors, [e.target.name]: "" });
-  }
+  };
 
   const Validate = () => {
     let errors = {};
@@ -68,20 +64,10 @@ function Login1() {
         "Password must meet criteria: password must be more than 8 char least one uppercase letter, one lowercase letter, one number, and one special character";
     }
 
-    // Remember functionality
-    if (checked) {
-      localStorage.setItem("email", value1.email);
-      localStorage.setItem("password", value1.password);
-      localStorage.setItem("Rememberme", true);
-    } else {
-      localStorage.setItem("Rememberme", false);
-    }
-
     seterror(errors);
     return Object.keys(errors).length === 0;
   };
 
-  // Firebase -> Continue with Google
   const handleClick = (e) => {
     signInWithPopup(auth, provider)
       .then((result) => {
@@ -89,8 +75,6 @@ function Login1() {
         setValue(userUid);
         const uid = userUid.uid;
         localStorage.setItem("uid", uid);
-        console.log("uiddata", uid);
-        // const userEmail = userUid.email;
 
         const uid1 = {
           uid: uid,
@@ -114,7 +98,14 @@ function Login1() {
     window.location.reload();
   };
 
-  // login api calling
+  function setCookie(name, value, hours) {
+    const now = new Date();
+    const expirationDate = new Date(now.getTime() + hours * 60 * 60 * 1000);
+
+    const expires = "expires=" + expirationDate.toUTCString();
+    document.cookie = `${name}=${value}; ${expires}; path=/`;
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (Validate()) {
@@ -122,27 +113,37 @@ function Login1() {
         email: value1?.email,
         password: value1?.password,
       };
-      // console.log("body", body);
       await axios
         .post("http://192.168.29.203:8080/v1/login/user", body)
         .then((res) => {
           console.log("res", res);
           console.log("apidata", res.data.message);
+          setCookie("jwtToken", res?.data?.token, 24);
+          localStorage.setItem("jwtToken", res?.data?.token);
+
+          createDeviceToken(res?.data?.token);
+
+          if (localStorage.getItem("jwtToken")) {
+            // navigate("/dashboard");
+          }
+          if (checked) {
+            localStorage.setItem("email", value1.email);
+            localStorage.setItem("password", value1.password);
+            localStorage.setItem("Rememberme", true);
+          } else {
+            localStorage.setItem("Rememberme", false);
+          }
         })
         .catch((err) => {
           console.log(err);
-          // signup error set
           setValue("Login failed. Please check your credentials.");
         });
-      toast("Useer logged in Successfully");
-      console.log("value1", value1);
+      toast("User logged in Successfully");
     } else {
       console.log("validation fails, Error", errors);
     }
   };
-  
-  const Signpage = useNavigate();
-  
+
   return (
     <>
       <div className="login">
@@ -159,7 +160,7 @@ function Login1() {
                     onChange={HandleOnChange}
                     value={value1?.email}
                     name="email"
-                    placeholder="enter youre Email"
+                    placeholder="enter your Email"
                   />
                 </div>
                 {errors.email && <p style={{ color: "red" }}>{errors.email}</p>}
@@ -219,11 +220,19 @@ function Login1() {
                 <img className="google1" src={google} alt="not found" />
 
                 {value ? (
-                  <button onClick={handleLogout} className="google2" type="button">
+                  <button
+                    onClick={handleLogout}
+                    className="google2"
+                    type="button"
+                  >
                     Logout
                   </button>
                 ) : (
-                  <button type="button" onClick={handleClick} className="google2">
+                  <button
+                    type="button"
+                    onClick={handleClick}
+                    className="google2"
+                  >
                     Continue with Google
                   </button>
                 )}
