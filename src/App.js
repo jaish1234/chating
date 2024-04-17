@@ -11,20 +11,7 @@ import Dashboard from  "./component/dashoboard-ui/Dashboard";
 
 function App() {
 
-  useEffect(() => {
-    // Request permission to receive notifications and get FCM token
-      getToken(messaging, { vapidKey: 'BCxf0ciwnbQcMKY8pw2co8tfaK2mZlEkdKaZ3EK8rPrkUXK63SHzwtBnlGZz_p-VrIDjHpdm2rgd17VnqT3npGc' }) // Replace 'your-actual-vapid-key' with your VAPID key
-      .then((currentToken) => {
-        if (currentToken) {
-          console.log("FCM token:", currentToken);
-        } else {
-          console.log("No FCM token available.");
-        }
-      })
-      .catch((error) => {
-        console.error("Error obtaining FCM token:", error);
-      });
-  }, []);
+  
 
   return (
     <>

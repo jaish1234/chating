@@ -1,32 +1,37 @@
 import React, { useEffect, useState } from "react";
 import "./Login1.css";
 import {
+  Button,
   FormControl,
   IconButton,
   InputAdornment,
   OutlinedInput,
+  Stack,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import google from "../../assets/img/google.png";
-import { auth, provider } from "./Loginconfig";
-import { signInWithPopup } from "firebase/auth";
+
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
-import {createDeviceToken} from "../token/CreateToken"
+import { initializeApp } from "firebase/app";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+
+import googleImage from "../../assets/img/google.png";
 
 function Login1() {
   const [showPassword, setShowPassword] = React.useState(false);
   const [value1, setvalue1] = useState({});
   const [errors, seterror] = useState({});
-  const [value, setValue] = useState("");
+  // const [value, setValue] = useState("");
+  const [loginError, setLoginError] = useState("");
   const [checked, setChecked] = useState(false);
   const navigate = useNavigate();
+  const [values, setValues] = useState({});
 
   useEffect(() => {
     const email = localStorage.getItem("email");
@@ -68,21 +73,19 @@ function Login1() {
     return Object.keys(errors).length === 0;
   };
 
-  const handleClick = (e) => {
-    signInWithPopup(auth, provider)
-      .then((result) => {
-        const userUid = result.user;
-        setValue(userUid);
-        const uid = userUid.uid;
-        localStorage.setItem("uid", uid);
+  const handleGoogleSignIn = async () => {
+    await signInWithPopup(auth, googleProvider)
+      .then((res) => {
+        console.log("res", res);
 
-        const uid1 = {
-          uid: uid,
-        };
+        const userUid = res?.user?.uid;
+        console.log("userId", userUid);
+
         axios
-          .get(`http://192.168.29.203:8080/v1/user/${uid}`, uid1)
+          .get(`http://192.168.29.203:8080/v1/user/${userUid}`)
           .then((response) => {
-            console.log("uid", response.data);
+            console.log("response", response);
+            navigate("/dashboard");
           })
           .catch((err) => {
             console.log("axios error", err);
@@ -93,10 +96,19 @@ function Login1() {
       });
   };
 
-  const handleLogout = () => {
-    localStorage.clear();
-    window.location.reload();
+  const firebaseConfig = {
+    apiKey: "AIzaSyAhlQJyVkDteRoSD7PFDcMCiLAAgCBrJ6M",
+    authDomain: "auth-login-socket.firebaseapp.com",
+    projectId: "auth-login-socket",
+    storageBucket: "auth-login-socket.appspot.com",
+    messagingSenderId: "601984663844",
+    appId: "1:601984663844:web:aa8a0bbb3998dd6488f3b1",
+    measurementId: "G-G23R084TFQ",
   };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth();
+  const googleProvider = new GoogleAuthProvider();
 
   function setCookie(name, value, hours) {
     const now = new Date();
@@ -121,10 +133,8 @@ function Login1() {
           setCookie("jwtToken", res?.data?.token, 24);
           localStorage.setItem("jwtToken", res?.data?.token);
 
-          createDeviceToken(res?.data?.token);
-
           if (localStorage.getItem("jwtToken")) {
-            // navigate("/dashboard");
+            navigate("/dashboard");
           }
           if (checked) {
             localStorage.setItem("email", value1.email);
@@ -136,7 +146,7 @@ function Login1() {
         })
         .catch((err) => {
           console.log(err);
-          setValue("Login failed. Please check your credentials.");
+          setLoginError("Login failed. Please check your credentials.");
         });
       toast("User logged in Successfully");
     } else {
@@ -202,7 +212,7 @@ function Login1() {
                 <button className="conti" type="submit">
                   Continue with Email
                 </button>
-                {value && <p style={{ color: "red" }}>{value}</p>}
+                {loginError && <p style={{ color: "red" }}>{loginError}</p>}
                 <ToastContainer
                   position="top-center"
                   autoClose={5000}
@@ -216,27 +226,34 @@ function Login1() {
               <hr className="hr"></hr>
               <p id="or">or</p>
 
-              <div className="google">
-                <img className="google1" src={google} alt="not found" />
-
-                {value ? (
-                  <button
-                    onClick={handleLogout}
-                    className="google2"
-                    type="button"
-                  >
-                    Logout
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={handleClick}
-                    className="google2"
-                  >
-                    Continue with Google
-                  </button>
-                )}
-              </div>
+              <Stack direction="column" alignItems="center" spacing={1}>
+                <Button
+                  onClick={handleGoogleSignIn}
+                  style={{
+                    color: "#000",
+                    background: "#fff",
+                    padding: "8px 40px",
+                    marginTop: "24px",
+                    fontSize: "14px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <img
+                    src={googleImage}
+                    alt="Google"
+                    style={{
+                      marginRight: "8px",
+                      width: "30px",
+                      height: "30px",
+                    }}
+                  />
+                  <span style={{ flex: 1, textAlign: "right" }}>
+                    Sign In with Google
+                  </span>
+                </Button>
+              </Stack>
               <button
                 className="signin_btn"
                 onClick={() => navigate("/signup")}
