@@ -20,6 +20,7 @@ import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { getMessaging, getToken } from "firebase/messaging";
 
 import googleImage from "../../assets/img/google.png";
 
@@ -75,20 +76,54 @@ function Login1() {
 
   const handleGoogleSignIn = async () => {
     await signInWithPopup(auth, googleProvider)
-      .then((res) => {
-        console.log("res", res);
-
+      .then(async (res) => {
         const userUid = res?.user?.uid;
-        console.log("userId", userUid);
 
-        axios
-          .get(`http://192.168.29.203:8080/v1/user/${userUid}`)
-          .then((response) => {
-            console.log("response", response);
-            navigate("/dashboard");
+        const messaging = getMessaging();
+        try {
+          const registration = await navigator.serviceWorker.register(
+            "/firebase-messaging-sw.js",
+            {
+              scope: "/",
+            }
+          );
+          console.log(
+            "Service Worker registered with scope:",
+            registration.scope
+          );
+        } catch (error) {
+          console.error("Service Worker registration failed:", error);
+        }
+        Notification.requestPermission()
+          .then(async (permission) => {
+            if (permission === "granted") {
+              getToken(messaging)
+                .then((currentToken) => {
+                  if (currentToken) {
+                    console.log("Device token:", currentToken);
+
+                    axios
+                      .post(`http://192.168.29.203:8080/v1/user/${userUid}`)
+                      .then((response) => { 
+                        console.log("User data:", response.data);
+                        navigate("/dashboard");
+                      })
+                      .catch((error) => {
+                        console.error("Error fetching user data:", error);
+                      });
+                  } else {
+                    console.log("No registration token available.");
+                  }
+                })
+                .catch((error) => {
+                  console.error("Error retrieving token: ", error);
+                });
+            } else {
+              console.log("Notification permission denied or blocked.");
+            }
           })
-          .catch((err) => {
-            console.log("axios error", err);
+          .catch((error) => {
+            console.error("Error requesting notification permission: ", error);
           });
       })
       .catch((err) => {
@@ -164,7 +199,7 @@ function Login1() {
                 <p className="log4">Login</p>
                 <div className="c3">
                   <div className="c4">
-                    <span class="material-symbols-outlined">person</span>
+                    <span className="material-symbols-outlined">person</span>
                   </div>
                   <input
                     onChange={HandleOnChange}
