@@ -28,11 +28,11 @@ function Login1() {
   const [showPassword, setShowPassword] = React.useState(false);
   const [value1, setvalue1] = useState({});
   const [errors, seterror] = useState({});
-  // const [value, setValue] = useState("");
+  
   const [loginError, setLoginError] = useState("");
   const [checked, setChecked] = useState(false);
   const navigate = useNavigate();
-  const [values, setValues] = useState({});
+ 
 
   useEffect(() => {
     const email = localStorage.getItem("email");
@@ -102,11 +102,12 @@ function Login1() {
                   if (currentToken) {
                     console.log("Device token:", currentToken);
 
+                    navigate("/dashboard");
+
                     axios
-                      .post(`http://192.168.29.203:8080/v1/user/${userUid}`)
-                      .then((response) => { 
+                      .get(`http://192.168.29.203:8080/v1/user/${userUid}`)
+                      .then((response) => {
                         console.log("User data:", response.data);
-                        navigate("/dashboard");
                       })
                       .catch((error) => {
                         console.error("Error fetching user data:", error);
