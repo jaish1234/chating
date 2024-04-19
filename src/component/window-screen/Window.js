@@ -3,7 +3,7 @@ import "./Window.css"
 import window from "../../assets/img/window.png" 
 import LockIcon from '@mui/icons-material/Lock';
 
-function Window() {
+function WindowScreen() {
   return (
     <>
         <div className='window'>
@@ -26,4 +26,4 @@ function Window() {
   )
 }
 
-export default Window
+export default WindowScreen

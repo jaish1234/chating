@@ -1,16 +1,9 @@
 import React, { useEffect, useState } from "react";
 import "./Login1.css";
-import {
-  Button,
-  FormControl,
-  IconButton,
-  InputAdornment,
-  OutlinedInput,
-  Stack,
-} from "@mui/material";
+import { Button, FormControl, IconButton, InputAdornment, OutlinedInput, Stack} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";  
 import { jwtDecode } from "jwt-decode";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -123,7 +116,7 @@ function Login1() {
                               "Device token Response*****",
                               deviceresponse
                             );
-                            navigate("/dashboard");
+                            navigate("/main_dashboard");
                           })
                           .catch((devicerror) => {
                             console.log("Device error", devicerror);
@@ -134,7 +127,7 @@ function Login1() {
                       .catch((error) => {
                         console.error("Error fetching user data:", error);
                       });
-                      
+
                   } else {
                     console.log("No registration token available.");
                   }
@@ -194,7 +187,7 @@ function Login1() {
           console.log("decode ", decoded);
 
           if (localStorage.getItem("jwtToken")) {
-            navigate("/dashboard");
+            navigate("/main_dashboard");
           }
           if (checked) {
             localStorage.setItem("email", value1.email);
@@ -241,7 +234,7 @@ function Login1() {
                             "Device token Response*****",
                             deviceresponse
                           );
-                          navigate("/dashboard");
+                          navigate("/main_dashboard");
                         })
                         .catch((devicerror) => {
                           console.log("Device error", devicerror);

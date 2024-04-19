@@ -7,12 +7,13 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 40rem;
+    height: 47.5rem;
+    background-color: #F0F2F5;
 }
 .window1{
-    /* border:  1px solid black; */
     text-align: center;
     width: 30rem;
+    margin-top: 8rem;
 }
 .window_img{width: 15rem}
 .download{

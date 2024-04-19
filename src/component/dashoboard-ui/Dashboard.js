@@ -35,56 +35,19 @@ function Dashboard() {
     <div>
       <Box
         sx={{
-          width: "25%",
-          background: "#eceff1",
+          background: "#F0F2F5",
           padding: "10px",
-          "@media (max-width: 600px)": {
-            width: "100%",
-          },
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
+          "@media (max-width: 600px)": {width: "100%"},
+        }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center",}}>
           <div>
-            <Avatar
-              src=""
-              sx={{ width: 50, height: 50, marginRight: "10px" }}
-            />
+            <Avatar src="" sx={{ width: 50, height: 50, marginRight: "10px" }}/>
           </div>
-          <div>
-            <PeopleOutlineIcon
-              style={{
-                marginRight: "10px",
-                color: "#616161",
-                fontSize: "28px",
-              }}
-            />
-            <AutorenewIcon
-              style={{
-                marginRight: "10px",
-                color: "#616161",
-                fontSize: "28px",
-              }}
-            />
-            <CreateNewFolderOutlinedIcon
-              style={{
-                marginRight: "10px",
-                color: "#616161",
-                fontSize: "28px",
-              }}
-            />
-            <MoreVertIcon
-              style={{
-                marginRight: "10px",
-                color: "#616161",
-                fontSize: "28px",
-              }}
-            />
+          <div style={{display:'flex'}}>
+            <PeopleOutlineIcon style={{ marginRight: "10px", color: "#616161", fontSize: "28px",}}/>
+            <AutorenewIcon style={{ marginRight: "10px", color: "#616161", fontSize: "28px",}}/>
+            <CreateNewFolderOutlinedIcon style={{ marginRight: "10px", color: "#616161", fontSize: "28px",}}/>
+            <MoreVertIcon style={{ marginRight: "10px", color: "#616161", fontSize: "28px",}}/>
           </div>
         </div>
       </Box>
@@ -93,11 +56,8 @@ function Dashboard() {
           width: "23%",
           background: "#fff",
           padding: "10px",
-          "@media (max-width: 600px)": {
-            width: "100%",
-          },
-        }}
-      >
+          "@media (max-width: 600px)": {width: "100%"},
+        }}>
         <div style={{ display: "flex", alignItems: "center" }}>
           <div style={{ flex: 1 }}>
             <TextField
@@ -111,12 +71,7 @@ function Dashboard() {
                     </IconButton>
                   </InputAdornment>
                 ),
-                style: {
-                  background: "#eceff1",
-                  // color: "#fff",
-                  padding: "0",
-                  height: "auto",
-                },
+                style: { background: "#eceff1", width: '22rem', padding: "0", height: "auto",},
               }}
             />
           </div>
@@ -127,10 +82,7 @@ function Dashboard() {
 
         <div style={{ display: "flex", marginTop: "12px" }}>
           <div>
-            <Avatar
-              src=""
-              sx={{ width: 50, height: 50, marginRight: "10px" }}
-            />
+            <Avatar src="" sx={{ width: 50, height: 50, marginRight: "10px" }} />
           </div>
 
           <div style={{ marginLeft: "2px" }}>
@@ -138,6 +90,7 @@ function Dashboard() {
               Jaish
             </p>
           </div>
+
         </div>
       </Box>
     </div>
