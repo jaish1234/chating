@@ -11,7 +11,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-
+import { jwtDecode } from "jwt-decode";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
@@ -32,6 +32,7 @@ function Login1() {
   const [loginError, setLoginError] = useState("");
   const [checked, setChecked] = useState(false);
   const navigate = useNavigate();
+  // const [values, setValues] = useState({});
  
 
   useEffect(() => {
@@ -78,11 +79,11 @@ function Login1() {
     await signInWithPopup(auth, googleProvider)
       .then(async (res) => {
         const userUid = res?.user?.uid;
-
         const messaging = getMessaging();
+
         try {
           const registration = await navigator.serviceWorker.register(
-            "/firebase-messaging-sw.js",
+            "/firebase-messaging-sw.js", 
             {
               scope: "/",
             }
@@ -100,18 +101,40 @@ function Login1() {
               getToken(messaging)
                 .then((currentToken) => {
                   if (currentToken) {
-                    console.log("Device token:", currentToken);
-
-                    navigate("/dashboard");
+                    console.log("Device Token:", currentToken);
 
                     axios
                       .get(`http://192.168.29.203:8080/v1/user/${userUid}`)
                       .then((response) => {
+                        const decoded = jwtDecode(response?.data?.token);
+                        console.log("decode ", decoded);
+
+                        const body = {
+                          userId: decoded?.userId,
+                          deviceToken: currentToken,
+                        };
+                        axios
+                          .post(
+                            "http://192.168.29.203:8080/v1/user/device-token",
+                            body
+                          )
+                          .then((deviceresponse) => {
+                            console.log(
+                              "Device token Response*****",
+                              deviceresponse
+                            );
+                            navigate("/dashboard");
+                          })
+                          .catch((devicerror) => {
+                            console.log("Device error", devicerror);
+                          });
+
                         console.log("User data:", response.data);
                       })
                       .catch((error) => {
                         console.error("Error fetching user data:", error);
                       });
+                      
                   } else {
                     console.log("No registration token available.");
                   }
@@ -164,10 +187,11 @@ function Login1() {
       await axios
         .post("http://192.168.29.203:8080/v1/login/user", body)
         .then((res) => {
-          console.log("res", res);
-          console.log("apidata", res.data.message);
           setCookie("jwtToken", res?.data?.token, 24);
           localStorage.setItem("jwtToken", res?.data?.token);
+
+          const decoded = jwtDecode(res?.data?.token);
+          console.log("decode ", decoded);
 
           if (localStorage.getItem("jwtToken")) {
             navigate("/dashboard");
@@ -179,12 +203,72 @@ function Login1() {
           } else {
             localStorage.setItem("Rememberme", false);
           }
+
+          const messaging = getMessaging();
+          try {
+            const registration = navigator.serviceWorker.register(
+              "/firebase-messaging-sw.js",
+              {
+                scope: "/",
+              }
+            );
+            console.log(
+              "Service Worker registered with scope:",
+              registration.scope
+            );
+          } catch (error) {
+            console.error("Service Worker registration failed:", error);
+          }
+          Notification.requestPermission()
+            .then(async (permission) => {
+              if (permission === "granted") {
+                getToken(messaging)
+                  .then((currentToken) => {
+                    if (currentToken) {
+                      console.log("Device Token:", currentToken);
+
+                      const body = {
+                        userId: decoded?.userId,
+                        deviceToken: currentToken,
+                      };
+                      axios
+                        .post(
+                          "http://192.168.29.203:8080/v1/user/device-token",
+                          body
+                        )
+                        .then((deviceresponse) => {
+                          console.log(
+                            "Device token Response*****",
+                            deviceresponse
+                          );
+                          navigate("/dashboard");
+                        })
+                        .catch((devicerror) => {
+                          console.log("Device error", devicerror);
+                        });
+                    } else {
+                      console.log("No registration token available.");
+                    }
+                  })
+                  .catch((error) => {
+                    console.error("Error retrieving token: ", error);
+                  });
+              } else {
+                console.log("Notification permission denied or blocked.");
+              }
+            })
+            .catch((error) => {
+              console.error(
+                "Error requesting notification permission: ",
+                error
+              );
+            });
+          toast("User logged in Successfully");
         })
         .catch((err) => {
           console.log(err);
           setLoginError("Login failed. Please check your credentials.");
         });
-      toast("User logged in Successfully");
     } else {
       console.log("validation fails, Error", errors);
     }
