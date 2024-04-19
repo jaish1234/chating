@@ -100,7 +100,7 @@ function Signup() {
             conpassword: "",
             profilePicture: null,
           });
-          navigate("/dashboard")
+          navigate("/main_dashboard")
         })
         .catch((error) => {
           console.log("error", error);
