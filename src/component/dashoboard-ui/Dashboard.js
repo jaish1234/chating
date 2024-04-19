@@ -12,24 +12,24 @@ import CreateNewFolderOutlinedIcon from "@mui/icons-material/CreateNewFolderOutl
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import SearchIcon from "@mui/icons-material/Search";
 import FilterListOutlinedIcon from "@mui/icons-material/FilterListOutlined";
-import { GetUserData } from "../Api/Api";
+// import { GetUserData } from "../Api/Api";
 
 function Dashboard() {
   const [user, setUser] = useState();
 
-  useEffect(() => {
-    AddUser();
-  }, []);
+  // useEffect(() => {
+  //   AddUser();
+  // }, []);
 
-  const AddUser = async () => {
-    GetUserData()
-      .then((response) => {
-        console.log("Response:", response); 
-      })
-      .catch((error) => {
-        console.log("Error:", error); 
-      });
-  };
+  // const AddUser = async () => {
+  //   GetUserData()
+  //     .then((response) => {
+  //       console.log("Response:", response); 
+  //     })
+  //     .catch((error) => {
+  //       console.log("Error:", error); 
+  //     });
+  // };
 
   return (
     <div>
@@ -113,7 +113,7 @@ function Dashboard() {
                 ),
                 style: {
                   background: "#eceff1",
-                  color: "#fff",
+                  // color: "#fff",
                   padding: "0",
                   height: "auto",
                 },
@@ -135,7 +135,7 @@ function Dashboard() {
 
           <div style={{ marginLeft: "2px" }}>
             <p style={{ fontSize: "20px", textTransform: "capitalize" }}>
-              khushi
+              Jaish
             </p>
           </div>
         </div>
