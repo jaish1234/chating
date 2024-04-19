@@ -28,11 +28,11 @@ function Login1() {
   const [showPassword, setShowPassword] = React.useState(false);
   const [value1, setvalue1] = useState({});
   const [errors, seterror] = useState({});
-  // const [value, setValue] = useState("");
+  
   const [loginError, setLoginError] = useState("");
   const [checked, setChecked] = useState(false);
   const navigate = useNavigate();
-  // const [values, setValues] = useState({});
+  const [values, setValues] = useState({});
 
   useEffect(() => {
     const email = localStorage.getItem("email");
@@ -100,34 +100,11 @@ function Login1() {
               getToken(messaging)
                 .then((currentToken) => {
                   if (currentToken) {
-                    console.log("Device Token:", currentToken);
+                    console.log("Device token:", currentToken);
 
                     axios
-                      .get(`http://192.168.29.203:8080/v1/user/${userUid}`)
-                      .then((response) => {
-                        const decoded = jwtDecode(response?.data?.token);
-                        console.log("decode ", decoded);
-
-                        const body = {
-                          userId: decoded?.userId,
-                          deviceToken: currentToken,
-                        };
-                        axios
-                          .post(
-                            "http://192.168.29.203:8080/v1/user/device-token",
-                            body
-                          )
-                          .then((deviceresponse) => {
-                            console.log(
-                              "Device token Response*****",
-                              deviceresponse
-                            );
-                            navigate("/dashboard");
-                          })
-                          .catch((devicerror) => {
-                            console.log("Device error", devicerror);
-                          });
-
+                      .post(`http://192.168.29.203:8080/v1/user/${userUid}`)
+                      .then((response) => { 
                         console.log("User data:", response.data);
                       })
                       .catch((error) => {
