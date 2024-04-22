@@ -36,7 +36,7 @@ function Dashboard() {
             key={index}
             style={{
               display: "flex",
-              // alignItems: "center",
+              alignItems: "center",
               justifyContent: "space-between",
               marginTop: "12px",
               borderBottome: "1px solid #000",

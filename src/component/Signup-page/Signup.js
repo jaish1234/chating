@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import "./Signup.css";
 import { Box, FormControl, IconButton, InputAdornment, OutlinedInput, TextField, Avatar, Stack} from "@mui/material";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import Visibility from "@mui/icons-material/Visibility";
@@ -114,8 +113,8 @@ function Signup() {
 
   return (
     <>
-      <div className="signup">
-        <div className="sign">
+      <div style={{display:'flex',justifyContent:'center',alignItems:'center',height:'45rem'}}>
+        <div style={{border:'1px solid #e1e8dd',borderRadius:'0.3rem',width: '27rem',textAlign:'center',padding:'2rem 0'}}>
           <form onSubmit={(e) => handleSubmit(e)}>
             <Box>
               <Stack
@@ -258,7 +257,7 @@ function Signup() {
                 <p style={{ color: "red" }}>{errors?.conpassword}</p>
               )}
             </Box>
-            <button type="submit" className="sign_btn">
+            <button type="submit" onMouseEnter={(e) => e.target.style.backgroundColor = '#3ca002'} onMouseLeave={(e) => e.target.style.backgroundColor = '#108a00'} style={{padding: '7px 130px',fontSize:'17px',borderRadius:'0.2rem',margin:'3rem 0 1rem',border:'none',backgroundColor:'#108a00',color:'white'}}>
               Sign up
             </button>
             <ToastContainer
@@ -268,9 +267,9 @@ function Signup() {
               rtl={false}
             />
           </form>
-          <p className="log_link">
+          <p>
             Already have an account?
-            <Link to={"/login"}> Log In</Link>
+            <Link to={"/login"} style={{color:'green'}}> Log In</Link>
           </p>
         </div>
       </div>
