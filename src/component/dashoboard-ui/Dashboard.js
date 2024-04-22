@@ -1,21 +1,18 @@
-import {
-  Avatar,
-  Box,
-  IconButton,
-  InputAdornment,
-  TextField,
-} from "@mui/material";
 import React, { useEffect, useState } from "react";
+import { Avatar ,Box, Button, IconButton, InputAdornment, Menu, TextField } from "@mui/material";
 import PeopleOutlineIcon from "@mui/icons-material/PeopleOutline";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
 import CreateNewFolderOutlinedIcon from "@mui/icons-material/CreateNewFolderOutlined";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import SearchIcon from "@mui/icons-material/Search";
 import FilterListOutlinedIcon from "@mui/icons-material/FilterListOutlined";
+import { useNavigate } from "react-router-dom";
 // import { GetUserData } from "../Api/Api";
 
 function Dashboard() {
   const [user, setUser] = useState();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const navigate = useNavigate();
 
   // useEffect(() => {
   //   AddUser();
@@ -30,6 +27,17 @@ function Dashboard() {
   //       console.log("Error:", error); 
   //     });
   // };
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    localStorage.clear()
+    window.location.reload(navigate('/login'))
+  }
 
   return (
     <div>
@@ -43,11 +51,16 @@ function Dashboard() {
           <div>
             <Avatar src="" sx={{ width: 50, height: 50, marginRight: "10px" }}/>
           </div>
-          <div style={{display:'flex'}}>
+          <div style={{display:'flex',alignItems:'center'}}>
             <PeopleOutlineIcon style={{ marginRight: "10px", color: "#616161", fontSize: "28px",}}/>
             <AutorenewIcon style={{ marginRight: "10px", color: "#616161", fontSize: "28px",}}/>
             <CreateNewFolderOutlinedIcon style={{ marginRight: "10px", color: "#616161", fontSize: "28px",}}/>
-            <MoreVertIcon style={{ marginRight: "10px", color: "#616161", fontSize: "28px",}}/>
+            <IconButton onClick={handleClick}>
+              <MoreVertIcon style={{ color: "#616161", fontSize: "28px",}}/>
+            </IconButton>
+            <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
+              <Button sx={{width:'10rem'}} onClick={handleLogout}>Logout</Button>
+            </Menu>
           </div>
         </div>
       </Box>
@@ -67,7 +80,7 @@ function Dashboard() {
                 startAdornment: (
                   <InputAdornment position="start">
                     <IconButton>
-                      <SearchIcon />
+                      <SearchIcon/>
                     </IconButton>
                   </InputAdornment>
                 ),
