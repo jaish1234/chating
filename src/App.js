@@ -1,12 +1,9 @@
 import { useEffect } from "react";
 import "./index.css";
-// import Chat from './component/Chatpart/Chat';
 import Signup from "./component/Signup-page/Signup";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Login1 from "./component/login/Login1";
 import Maindashboard from "./component/Main-dashboard/Maindashboard";
-// import Dashboard from "./component/dashoboard-ui/Dashboard";
-// import Window from './component/window-screen/Window';
 
 function App() {
 
@@ -14,7 +11,6 @@ function App() {
 
   return (
     <>
-     
       <div>
         <Router>
           <Routes>

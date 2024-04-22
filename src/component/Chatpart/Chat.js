@@ -5,8 +5,6 @@ import PhoneForwardedIcon from "@mui/icons-material/PhoneForwarded";
 import SendIcon from "@mui/icons-material/Send";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 
-
-
 function Chat() {
   return (
     <>

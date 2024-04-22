@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Avatar,
   Box,
@@ -14,6 +14,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import FilterListOutlinedIcon from "@mui/icons-material/FilterListOutlined";
 
 function Header() {
+
   return  (
     <div style={{ position: "sticky", top: 0, zIndex: 1000, }}>
       <Box
@@ -68,41 +69,7 @@ function Header() {
           </div>
         </div>
       </Box>
-      <Box
-        sx={{
-          width: "23%",
-          background: "#fff",
-          padding: "10px",
-          "@media (max-width: 600px)": { width: "100%" },
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <div style={{ flex: 1 }}>
-            <TextField
-              fullWidth
-              placeholder="Search..."
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <IconButton>
-                      <SearchIcon />
-                    </IconButton>
-                  </InputAdornment>
-                ),
-                style: {
-                  background: "#eceff1",
-                  width: "22rem",
-                  padding: "0",
-                  height: "auto",
-                },
-              }}
-            />
-          </div>
-          <div style={{ marginLeft: "12px" }}>
-            <FilterListOutlinedIcon />
-          </div>
-        </div>
-      </Box>
+      
     </div>
   );
 }
