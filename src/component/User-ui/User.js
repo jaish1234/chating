@@ -1,10 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { Avatar, Box } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  IconButton,
+  InputAdornment,
+  TextField,
+} from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
+import FilterListOutlinedIcon from "@mui/icons-material/FilterListOutlined";
 
 import { GetUserData } from "../Api/Api";
 
 function User() {
   const [user, setUser] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     AddUser();
@@ -21,6 +30,10 @@ function User() {
       });
   };
 
+  const filteredUsers = user.filter((item) =>
+    item.username.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div>
       <Box
@@ -30,10 +43,46 @@ function User() {
           padding: "10px",
           overflowY: "scroll",
           // "@media (max-width: 600px)": { width: "100%" },
-          height: "calc(75vh - 20px)",
+          height: "calc(86.8vh - 20px)",
         }}
       >
-        {user.map((item, index) => (
+        <Box
+          sx={{
+            width: "23%",
+            background: "#fff",
+            "@media (max-width: 600px)": { width: "100%" },
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <div style={{ flex: 1 }}>
+              <TextField
+                fullWidth
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Search..."
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <IconButton>
+                        <SearchIcon />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                  style: {
+                    background: "#eceff1",
+                    width: "21rem",
+                    padding: "0",
+                    height: "auto",
+                  },
+                }}
+              />
+            </div>
+            <div style={{ marginLeft: "12px" }}>
+              <FilterListOutlinedIcon />
+            </div>
+          </div>
+        </Box>
+        {filteredUsers.map((item, index) => (
           <div
             key={index}
             style={{
@@ -43,7 +92,7 @@ function User() {
               marginTop: "12px",
               borderBottome: "1px solid #000",
               cursor: "pointer",
-              padding:"10px"
+              padding: "10px",
             }}
             onMouseEnter={(e) =>
               (e.currentTarget.style.backgroundColor = "#f0f0f0")

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Avatar, Box } from "@mui/material";
-
 import { GetUserData } from "../Api/Api";
 
 function Dashboard() {
