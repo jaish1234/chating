@@ -14,8 +14,8 @@ import SearchIcon from "@mui/icons-material/Search";
 import FilterListOutlinedIcon from "@mui/icons-material/FilterListOutlined";
 
 function Header() {
-  return (
-    <div>
+  return  (
+    <div style={{ position: "sticky", top: 0, zIndex: 1000, }}>
       <Box
         sx={{
           background: "#F0F2F5",
@@ -108,3 +108,4 @@ function Header() {
 }
 
 export default Header;
+

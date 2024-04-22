@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import "./App.css";
+import "./index.css";
 // import Chat from './component/Chatpart/Chat';
 import Signup from "./component/Signup-page/Signup";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
@@ -14,12 +14,7 @@ function App() {
 
   return (
     <>
-      {/* <Login1/> */}
-      {/* <Signup/> */}
-      {/* <Window/> */}
-      {/* <Chat/> */}
-      {/* <Maindashboard/> */}
-      {/* <Dashboard/> */}
+     
       <div>
         <Router>
           <Routes>
