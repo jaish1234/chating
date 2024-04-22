@@ -1,9 +1,16 @@
 import React, { useEffect, useState } from "react";
 import "./Login1.css";
-import { Button, FormControl, IconButton, InputAdornment, OutlinedInput, Stack} from "@mui/material";
+import {
+  Button,
+  FormControl,
+  IconButton,
+  InputAdornment,
+  OutlinedInput,
+  Stack,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";  
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { jwtDecode } from "jwt-decode";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -18,15 +25,14 @@ import { getMessaging, getToken } from "firebase/messaging";
 import googleImage from "../../assets/img/google.png";
 
 function Login1() {
-  const [showPassword, setShowPassword] = React.useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [value1, setvalue1] = useState({});
   const [errors, seterror] = useState({});
-  
+
   const [loginError, setLoginError] = useState("");
   const [checked, setChecked] = useState(false);
   const navigate = useNavigate();
   // const [values, setValues] = useState({});
- 
 
   useEffect(() => {
     const email = localStorage.getItem("email");
@@ -76,7 +82,7 @@ function Login1() {
 
         try {
           const registration = await navigator.serviceWorker.register(
-            "/firebase-messaging-sw.js", 
+            "/firebase-messaging-sw.js",
             {
               scope: "/",
             }
@@ -127,7 +133,6 @@ function Login1() {
                       .catch((error) => {
                         console.error("Error fetching user data:", error);
                       });
-
                   } else {
                     console.log("No registration token available.");
                   }
