@@ -70,11 +70,12 @@ function User() {
               >
                 {item?.username}
               </p>
-              <p style={{ fontSize: "14px", color: "#777", margin: "0" }}>
+              {/* <p style={{ fontSize: "14px", color: "#777", margin: "0" }}>
                 {item?.message && item?.message.length > 20
                   ? item?.message.substring(0, 20) + "..."
                   : item?.message}
-              </p>
+              </p> */}
+              <p>message...</p>
             </div>
           </div>
         ))}
