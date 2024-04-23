@@ -12,7 +12,7 @@ import FilterListOutlinedIcon from "@mui/icons-material/FilterListOutlined";
 import { GetUserData } from "../Api/Api";
 import Chat from "../Window-ui/Chat";
 
-function User({ setCurrentChat }) {
+function User({ setCurrentChat, setSelectedData }) {
   const [user, setUser] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   // const [currentChat, setCurrentChat] = useState(false);
@@ -32,12 +32,15 @@ function User({ setCurrentChat }) {
       });
   };
 
-  const filteredUsers = Array.isArray(user) ? user.filter((item) =>
-  item.username.toLowerCase().includes(searchTerm.toLowerCase())
-) : [];
+  const filteredUsers = Array.isArray(user)
+    ? user.filter((item) =>
+        item.username.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : [];
 
-  const handleOnCLickChat = () => {
+  const handleOnCLickChat = (data) => {
     setCurrentChat(true);
+    setSelectedData(data);
   };
 
   return (
@@ -101,7 +104,7 @@ function User({ setCurrentChat }) {
               cursor: "pointer",
               padding: "10px",
             }}
-            onClick={handleOnCLickChat}
+            onClick={() => handleOnCLickChat(item)}
             onMouseEnter={(e) =>
               (e.currentTarget.style.backgroundColor = "#f0f0f0")
             }
@@ -109,6 +112,7 @@ function User({ setCurrentChat }) {
               (e.currentTarget.style.backgroundColor = "transparent")
             }
           >
+            {/* { console.log("item",item)} */}
             <Avatar
               src={item?.profilePicture}
               sx={{ width: 50, height: 50, marginRight: "10px" }}

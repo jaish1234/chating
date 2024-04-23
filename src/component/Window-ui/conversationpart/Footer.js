@@ -1,10 +1,35 @@
-import React from 'react';
+import React, { useState } from 'react';
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import InsertEmoticonIcon from "@mui/icons-material/InsertEmoticon";
 import KeyboardVoiceIcon from '@mui/icons-material/KeyboardVoice';
 import { IconButton, TextField } from '@mui/material';
+import SendIcon from '@mui/icons-material/Send';
 
  function Footer() {
+
+    const [message, setMessage] = useState('');
+    const [inputIcon, setInputIcon] = useState(<InsertEmoticonIcon />);
+  
+    const handleInputChange = (event) => {
+      const inputValue = event.target.value;
+      setMessage(inputValue);
+  
+      // Change input icon based on input length
+      if (inputValue.trim().length > 0) {
+        setInputIcon(<SendIcon />);
+      } else {
+        setInputIcon(<InsertEmoticonIcon />);
+      }
+    };
+  
+    const sendMessage = () => {
+      // Your logic to send the message
+      console.log("Sending message:", message);
+  
+      // Clear the input field and reset the icon
+      setMessage('');
+      setInputIcon(<InsertEmoticonIcon />);
+    };
   return (
     <div>
          <div
@@ -32,9 +57,10 @@ import { IconButton, TextField } from '@mui/material';
             variant="outlined"
             size="small"
             sx={{ ml: 1 }}
+            onChange={handleInputChange}
           />
-          <IconButton>
-            <KeyboardVoiceIcon />
+           <IconButton onClick={sendMessage}>
+            {inputIcon}
           </IconButton>
         </div>
       </div>

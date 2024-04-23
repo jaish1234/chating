@@ -10,6 +10,7 @@ import Chatting from "../Window-ui/conversationpart/Chatting";
 
 function Maindashboard() {
   const [currentChat, setCurrentChat] = useState(false);
+  const [selectedData, setSelectedData] = useState();
 
   return (
     <>
@@ -17,10 +18,15 @@ function Maindashboard() {
         <Box sx={{ display: "flex" }}>
           <div style={{ width: "26rem" }}>
             <Header />
-            <User setCurrentChat={setCurrentChat} />
+            <User
+              setCurrentChat={setCurrentChat}
+              setSelectedData={setSelectedData}
+            />
             <Footer />
           </div>
-          <div style={{ width: "74rem" }}>{currentChat ? <Chatting/> : <Chat />}</div>
+          <div style={{ width: "74rem" }}>
+            {currentChat ? <Chatting selectedData={selectedData} /> : <Chat />}
+          </div>
         </Box>
       </div>
     </>

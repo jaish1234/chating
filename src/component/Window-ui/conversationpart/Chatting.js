@@ -1,18 +1,17 @@
-import React from 'react'
-import Header from './Header';
-import Convesation from './Convesation';
-import Footer  from './Footer';
+import React from "react";
+import Header from "./Header";
+import Convesation from "./Convesation";
+import Footer from "./Footer";
 
-
-function Chatting() {
+function Chatting({ selectedData }) {
+  console.log("selectedData", selectedData);
   return (
     <div>
-        <Header/>
-        <Convesation/>
-        <Footer/>
+      <Header  selectedData={selectedData}/>
+      <Convesation />
+      <Footer />
     </div>
-  )
+  );
 }
 
-
-export default  Chatting;
+export default Chatting;
