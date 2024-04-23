@@ -5,7 +5,12 @@ import axios, { AxiosHeaders } from "axios";
 export async function GetUserData() {
   try {
     const response = await axios.get(
-      `${process.env.REACT_APP_LOCAL_URL}/get/users`
+      `${process.env.REACT_APP_LOCAL_URL}/get/users`,
+      {
+        headers:{
+          Authorization:localStorage.getItem("jwtToken")
+        }
+      }
     );
     console.log("response", response);
     return response;

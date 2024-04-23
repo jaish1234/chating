@@ -10,10 +10,12 @@ import SearchIcon from "@mui/icons-material/Search";
 import FilterListOutlinedIcon from "@mui/icons-material/FilterListOutlined";
 
 import { GetUserData } from "../Api/Api";
+import Chat from "../Window-ui/Chat";
 
-function User() {
+function User({ setCurrentChat }) {
   const [user, setUser] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  // const [currentChat, setCurrentChat] = useState(false);
 
   useEffect(() => {
     AddUser();
@@ -30,9 +32,13 @@ function User() {
       });
   };
 
-  const filteredUsers = user.filter((item) =>
-    item.username.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredUsers = Array.isArray(user) ? user.filter((item) =>
+  item.username.toLowerCase().includes(searchTerm.toLowerCase())
+) : [];
+
+  const handleOnCLickChat = () => {
+    setCurrentChat(true);
+  };
 
   return (
     <div>
@@ -82,6 +88,7 @@ function User() {
             </div>
           </div>
         </Box>
+
         {filteredUsers.map((item, index) => (
           <div
             key={index}
@@ -94,6 +101,7 @@ function User() {
               cursor: "pointer",
               padding: "10px",
             }}
+            onClick={handleOnCLickChat}
             onMouseEnter={(e) =>
               (e.currentTarget.style.backgroundColor = "#f0f0f0")
             }

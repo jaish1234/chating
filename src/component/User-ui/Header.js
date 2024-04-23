@@ -19,7 +19,7 @@ function Header() {
     <div style={{ position: "sticky", top: 0, zIndex: 1000, }}>
       <Box
         sx={{
-          background: "#F0F2F5",
+          background: "#fff",
           padding: "10px",
           "@media (max-width: 600px)": { width: "100%", height: "100%" },
         }}
