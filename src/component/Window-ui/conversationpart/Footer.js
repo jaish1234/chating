@@ -1,39 +1,44 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from "react";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import InsertEmoticonIcon from "@mui/icons-material/InsertEmoticon";
-import KeyboardVoiceIcon from '@mui/icons-material/KeyboardVoice';
-import { IconButton, TextField } from '@mui/material';
-import SendIcon from '@mui/icons-material/Send';
+import KeyboardVoiceIcon from "@mui/icons-material/KeyboardVoice";
+import { IconButton, TextField } from "@mui/material";
+import SendIcon from "@mui/icons-material/Send";
+import io from "socket.io-client";
 
- function Footer() {
+const socket = io("http://localhost:3000"); // Replace with your server URL
 
-    const [message, setMessage] = useState('');
-    const [inputIcon, setInputIcon] = useState(<InsertEmoticonIcon />);
-  
-    const handleInputChange = (event) => {
-      const inputValue = event.target.value;
-      setMessage(inputValue);
-  
-      // Change input icon based on input length
-      if (inputValue.trim().length > 0) {
-        setInputIcon(<SendIcon />);
-      } else {
-        setInputIcon(<InsertEmoticonIcon />);
-      }
-    };
-  
-    const sendMessage = () => {
-      // Your logic to send the message
-      console.log("Sending message:", message);
-  
-      // Clear the input field and reset the icon
-      setMessage('');
-      setInputIcon(<InsertEmoticonIcon />);
-    };
+function Footer() {
+  const [message, setMessage] = useState("");
+  const [inputIcon, setInputIcon] = useState(<InsertEmoticonIcon />);
+
+  const handleInputChange = (event) => {
+    const inputValue = event.target.value;
+    setMessage(inputValue);
+
+    // Change input icon based on input length
+    if (inputValue.trim().length > 0) {
+      setInputIcon(<SendIcon />);
+    } else {
+      setInputIcon(<KeyboardVoiceIcon />);
+    }
+  };
+
+  const sendMessage = () => {
+    if (message.trim().length === 0) return; // Don't send empty messages
+
+    console.log("Sending message:", message);
+
+    socket.emit("message", { text: message });
+
+    setMessage("");
+    // setInputIcon(<InsertEmoticonIcon />);
+  };
+
   return (
     <div>
-         <div
-        sx={{
+      <div
+        style={{
           position: "fixed",
           bottom: 0,
           left: 0,
@@ -56,16 +61,15 @@ import SendIcon from '@mui/icons-material/Send';
             placeholder="Type a message"
             variant="outlined"
             size="small"
-            sx={{ ml: 1 }}
+            style={{ marginLeft: "10px" }}
             onChange={handleInputChange}
+            value={message}
           />
-           <IconButton onClick={sendMessage}>
-            {inputIcon}
-          </IconButton>
+          <IconButton onClick={sendMessage}>{inputIcon}</IconButton>
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 export default Footer;
