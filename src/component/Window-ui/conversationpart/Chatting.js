@@ -7,9 +7,9 @@ function Chatting({ selectedData }) {
   console.log("selectedData", selectedData);
   return (
     <div>
-      <Header  selectedData={selectedData}/>
+      <Header selectedData={selectedData}/>
       <Convesation />
-      <Footer />
+      <Footer/>
     </div>
   );
 }
