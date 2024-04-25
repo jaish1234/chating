@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import {
   Avatar,
   Box,
@@ -9,28 +9,9 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 import FilterListOutlinedIcon from "@mui/icons-material/FilterListOutlined";
 
-import { GetUserData } from "../Api/Api";
-import Chat from "../Window-ui/Chat";
-
-function User({ setCurrentChat, setSelectedData }) {
-  const [user, setUser] = useState([]);
+function User({ setCurrentChat, setSelectedData, user }) {
   const [searchTerm, setSearchTerm] = useState("");
   // const [currentChat, setCurrentChat] = useState(false);
-
-  useEffect(() => {
-    AddUser();
-  }, []);
-
-  const AddUser = async () => {
-    GetUserData()
-      .then((response) => {
-        console.log("Response:", response);
-        setUser(response?.data);
-      })
-      .catch((error) => {
-        console.log("Error:", error);
-      });
-  };
 
   const filteredUsers = Array.isArray(user)
     ? user.filter((item) =>

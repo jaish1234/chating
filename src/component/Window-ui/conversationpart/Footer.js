@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+// Footer.js
+import React, { useState } from "react";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import InsertEmoticonIcon from "@mui/icons-material/InsertEmoticon";
 import KeyboardVoiceIcon from "@mui/icons-material/KeyboardVoice";
@@ -8,7 +9,7 @@ import io from "socket.io-client";
 
 const socket = io("http://localhost:3000"); // Replace with your server URL
 
-function Footer() {
+function Footer({ sendMessage }) {
   const [message, setMessage] = useState("");
   const [inputIcon, setInputIcon] = useState(<InsertEmoticonIcon />);
 
@@ -16,7 +17,6 @@ function Footer() {
     const inputValue = event.target.value;
     setMessage(inputValue);
 
-    // Change input icon based on input length
     if (inputValue.trim().length > 0) {
       setInputIcon(<SendIcon />);
     } else {
@@ -24,15 +24,13 @@ function Footer() {
     }
   };
 
-  const sendMessage = () => {
-    if (message.trim().length === 0) return; // Don't send empty messages
+  const handleSendMessage = () => {
+    if (message.trim().length === 0) return;
 
-    console.log("Sending message:", message);
-
-    socket.emit("message", { text: message });
+    sendMessage(message);
 
     setMessage("");
-    // setInputIcon(<InsertEmoticonIcon />);
+    setInputIcon(<InsertEmoticonIcon />);
   };
 
   return (
@@ -65,7 +63,7 @@ function Footer() {
             onChange={handleInputChange}
             value={message}
           />
-          <IconButton onClick={sendMessage}>{inputIcon}</IconButton>
+          <IconButton onClick={handleSendMessage}>{inputIcon}</IconButton>
         </div>
       </div>
     </div>
