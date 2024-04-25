@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-
 import { Box } from "@mui/material";
 import User from "../User-ui/User";
 import Footer from "../User-ui/Footer";
@@ -14,7 +13,7 @@ function Maindashboard() {
   const [currentChat, setCurrentChat] = useState(false);
   const [selectedData, setSelectedData] = useState();
   const [user, setUser] = useState([]);
-  const [userPicture, setUserPicture] = useState();
+  const [userProfile, setuserProfile] = useState();
   const token = localStorage.getItem("jwtToken");
   const decoded = jwtDecode(token);
 
@@ -36,10 +35,14 @@ function Maindashboard() {
 
   const UserLoginProfilepicture = async () => {
     await axios
-      .get(`http://192.168.29.203:8080/v1/get/user/${decoded?.userId}`)
+      .get(`http://192.168.29.203:8080/v1/get/user/${decoded?.userId}`, {
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+        },
+      })
       .then((response) => {
-        setUserPicture(response?.data?.[0]);
-        // console.log("UserLoginProfilepicture response", response);
+        setuserProfile(response?.data?.[0]);
+        console.log("UserLoginProfilepicture response", response);
       })
       .catch((error) => {
         console.log("UserLoginProfilepicture error", error);
@@ -51,7 +54,7 @@ function Maindashboard() {
       <div style={{ overflowY: "hidden" }}>
         <Box sx={{ display: "flex" }}>
           <div style={{ width: "26rem" }}>
-            <Header userPicture={userPicture} />
+            <Header userProfile={userProfile} />
             <User
               setCurrentChat={setCurrentChat}
               setSelectedData={setSelectedData}

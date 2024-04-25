@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import { Avatar, Box } from "@mui/material";
+import {
+  Avatar, Box } from "@mui/material";
 import PeopleOutlineIcon from "@mui/icons-material/PeopleOutline";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
 import CreateNewFolderOutlinedIcon from "@mui/icons-material/CreateNewFolderOutlined";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
-function Header({userPicture}) {
+function Header({userProfile}) {
 
   return (
     <div style={{ position: "sticky", top: 0, zIndex: 1000 }}>
@@ -25,7 +26,7 @@ function Header({userPicture}) {
         >
           <div>
             <Avatar
-              src={userPicture?.profilePicture}
+              src={userProfile?.profilePicture}
               sx={{ width: 50, height: 50, marginRight: "10px" }}
             />
           </div>

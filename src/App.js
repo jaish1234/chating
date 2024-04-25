@@ -7,8 +7,6 @@ import Maindashboard from "./component/Main-dashboard/Maindashboard";
 
 function App() {
 
-  
-
   return (
     <>
       <div>
