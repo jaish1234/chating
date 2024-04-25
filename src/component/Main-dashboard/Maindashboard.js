@@ -51,7 +51,6 @@ function Maindashboard() {
       <div style={{ overflowY: "hidden" }}>
         <Box sx={{ display: "flex" }}>
           <div style={{ width: "26rem" }}>
-            <Header user={user} />
             <Header userPicture={userPicture} />
             <User
               setCurrentChat={setCurrentChat}
