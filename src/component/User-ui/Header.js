@@ -1,22 +1,14 @@
 import React, { useState } from "react";
-import {
-  Avatar,
-  Box,
-  IconButton,
-  InputAdornment,
-  TextField,
-} from "@mui/material";
+import { Avatar, Box } from "@mui/material";
 import PeopleOutlineIcon from "@mui/icons-material/PeopleOutline";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
 import CreateNewFolderOutlinedIcon from "@mui/icons-material/CreateNewFolderOutlined";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import SearchIcon from "@mui/icons-material/Search";
-import FilterListOutlinedIcon from "@mui/icons-material/FilterListOutlined";
 
-function Header() {
+function Header({userPicture}) {
 
-  return  (
-    <div style={{ position: "sticky", top: 0, zIndex: 1000, }}>
+  return (
+    <div style={{ position: "sticky", top: 0, zIndex: 1000 }}>
       <Box
         sx={{
           background: "#fff",
@@ -33,7 +25,7 @@ function Header() {
         >
           <div>
             <Avatar
-              src=""
+              src={userPicture?.profilePicture}
               sx={{ width: 50, height: 50, marginRight: "10px" }}
             />
           </div>
@@ -69,10 +61,8 @@ function Header() {
           </div>
         </div>
       </Box>
-      
     </div>
   );
 }
 
 export default Header;
-

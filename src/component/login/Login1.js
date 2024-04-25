@@ -1,13 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./Login1.css";
-import {
-  Button,
-  FormControl,
-  IconButton,
-  InputAdornment,
-  OutlinedInput,
-  Stack,
-} from "@mui/material";
+import { Button, FormControl, IconButton, InputAdornment, OutlinedInput, Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
@@ -21,18 +14,15 @@ import axios from "axios";
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { getMessaging, getToken } from "firebase/messaging";
-
 import googleImage from "../../assets/img/google.png";
 
 function Login1() {
   const [showPassword, setShowPassword] = useState(false);
   const [value1, setvalue1] = useState({});
   const [errors, seterror] = useState({});
-
   const [loginError, setLoginError] = useState("");
   const [checked, setChecked] = useState(false);
   const navigate = useNavigate();
-  // const [values, setValues] = useState({});
 
   useEffect(() => {
     const email = localStorage.getItem("email");
@@ -77,6 +67,7 @@ function Login1() {
   const handleGoogleSignIn = async () => {
     await signInWithPopup(auth, googleProvider)
       .then(async (res) => {
+        // console.log("firebase response", res);
         const userUid = res?.user?.uid;
         const messaging = getMessaging();
 
@@ -100,12 +91,11 @@ function Login1() {
               getToken(messaging)
                 .then((currentToken) => {
                   if (currentToken) {
-                    console.log("Device Token:", currentToken);
-
                     axios
                       .get(`http://192.168.29.203:8080/v1/user/${userUid}`)
                       .then((response) => {
                         const decoded = jwtDecode(response?.data?.token);
+                        localStorage.setItem("jwtToken", response?.data?.token);
                         console.log("decode ", decoded);
 
                         const body = {

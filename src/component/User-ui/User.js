@@ -32,7 +32,6 @@ function User({ setCurrentChat, setSelectedData, user }) {
           background: "#fff",
           padding: "10px",
           overflowY: "scroll",
-          // "@media (max-width: 600px)": { width: "100%" },
           height: "calc(86.8vh - 20px)",
         }}
       >
@@ -93,7 +92,6 @@ function User({ setCurrentChat, setSelectedData, user }) {
               (e.currentTarget.style.backgroundColor = "transparent")
             }
           >
-            {/* { console.log("item",item)} */}
             <Avatar
               src={item?.profilePicture}
               sx={{ width: 50, height: 50, marginRight: "10px" }}

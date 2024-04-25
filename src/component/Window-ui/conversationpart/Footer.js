@@ -7,7 +7,7 @@ import { IconButton, TextField } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import io from "socket.io-client";
 
-const socket = io("http://localhost:3000"); // Replace with your server URL
+const socket = io("http://localhost:3000"); 
 
 function Footer({ sendMessage }) {
   const [message, setMessage] = useState("");
