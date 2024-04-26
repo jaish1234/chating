@@ -4,7 +4,7 @@ import Conversation from "./Conversation"; // Corrected typo in component name
 import Footer from "./Footer";
 import io from "socket.io-client";
 
-const socket = io("http://localhost:5000"); // Changed port to match the server port
+const socket = io("http://localhost:3000"); // Changed port to match the server port
 
 function Chatting({ selectedData }) {
   const [messages, setMessages] = useState([]);
