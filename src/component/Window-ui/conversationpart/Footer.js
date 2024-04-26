@@ -1,15 +1,11 @@
-// Footer.js
 import React, { useState } from "react";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import InsertEmoticonIcon from "@mui/icons-material/InsertEmoticon";
 import KeyboardVoiceIcon from "@mui/icons-material/KeyboardVoice";
 import { IconButton, TextField } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
-import io from "socket.io-client";
 
-const socket = io("http://localhost:3000"); 
-
-function Footer({ sendMessage }) {
+function Footer({ sendMessage, logMessage }) {
   const [message, setMessage] = useState("");
   const [inputIcon, setInputIcon] = useState(<InsertEmoticonIcon />);
 
@@ -22,13 +18,18 @@ function Footer({ sendMessage }) {
     } else {
       setInputIcon(<KeyboardVoiceIcon />);
     }
+
+    // Log the message as it's typed
+    logMessage(inputValue);
   };
 
   const handleSendMessage = () => {
     if (message.trim().length === 0) return;
 
-    sendMessage(message);
+    // Call the sendMessage function to send the message
+    sendMessage({ text: message, sender: 'user' });
 
+    // Clear the message input field
     setMessage("");
     setInputIcon(<InsertEmoticonIcon />);
   };
