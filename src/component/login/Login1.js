@@ -43,7 +43,6 @@ function Login1() {
   const Validate = () => {
     let errors = {};
     const mailregex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{8,}$/;
 
     if (!value1?.email) {
       errors.email = "Email Required";
@@ -55,9 +54,8 @@ function Login1() {
       errors.password = "please enter your password";
     } else if (value1?.password.length < 8) {
       errors.password = "password must be more than 8 char";
-    } else if (!passwordRegex.test(value1.password)) {
-      errors.password =
-        "Password must meet criteria: password must be more than 8 char least one uppercase letter, one lowercase letter, one number, and one special character";
+    } else if (!value1?.password) {
+      errors.password = "wrong password";  
     }
 
     seterror(errors);
@@ -96,7 +94,7 @@ function Login1() {
                       .then((response) => {
                         const decoded = jwtDecode(response?.data?.token);
                         localStorage.setItem("jwtToken", response?.data?.token);
-                        console.log("decode ", decoded);
+                        console.log("decode ", decoded);  
 
                         const body = {
                           userId: decoded?.userId,

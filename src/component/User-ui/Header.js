@@ -1,12 +1,16 @@
 import React, { useState } from "react";
-import {
-  Avatar, Box } from "@mui/material";
+import { Avatar, Box, IconButton, Menu, MenuItem } from "@mui/material";
 import PeopleOutlineIcon from "@mui/icons-material/PeopleOutline";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
 import CreateNewFolderOutlinedIcon from "@mui/icons-material/CreateNewFolderOutlined";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
-function Header({userProfile}) {
+function Header({ userProfile, handleLogout }) {
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
 
   return (
     <div style={{ position: "sticky", top: 0, zIndex: 1000 }}>
@@ -31,34 +35,48 @@ function Header({userProfile}) {
             />
           </div>
           <div style={{ display: "flex" }}>
-            <PeopleOutlineIcon
-              style={{
-                marginRight: "10px",
-                color: "#616161",
-                fontSize: "28px",
-              }}
-            />
-            <AutorenewIcon
-              style={{
-                marginRight: "10px",
-                color: "#616161",
-                fontSize: "28px",
-              }}
-            />
-            <CreateNewFolderOutlinedIcon
-              style={{
-                marginRight: "10px",
-                color: "#616161",
-                fontSize: "28px",
-              }}
-            />
-            <MoreVertIcon
-              style={{
-                marginRight: "10px",
-                color: "#616161",
-                fontSize: "28px",
-              }}
-            />
+            <IconButton>
+              <PeopleOutlineIcon
+                style={{
+                  color: "#616161",
+                  fontSize: "28px",
+                }}
+              />
+            </IconButton>
+            <IconButton>
+              <AutorenewIcon
+                style={{
+                  color: "#616161",
+                  fontSize: "28px",
+                }}
+              />
+            </IconButton>
+            <IconButton>
+              <CreateNewFolderOutlinedIcon
+                style={{
+                  color: "#616161",
+                  fontSize: "28px",
+                }}
+              />
+            </IconButton>
+            <IconButton onClick={(e) => setAnchorEl(e.currentTarget)}>
+              <MoreVertIcon
+                style={{
+                  color: "#616161",
+                  fontSize: "28px",
+                }}
+              />
+            </IconButton>
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleMenuClose}
+            >
+              <MenuItem onClick={handleMenuClose} sx={{ width: "10rem" }}>
+                Settings
+              </MenuItem>
+              <MenuItem onClick={handleLogout}>Logout</MenuItem>
+            </Menu>
           </div>
         </div>
       </Box>
