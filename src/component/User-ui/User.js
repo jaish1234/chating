@@ -1,4 +1,4 @@
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import {
   Avatar,
   Box,
@@ -31,8 +31,6 @@ function User({ setCurrentChat, setSelectedData, user }) {
           width: "100%",
           background: "#fff",
           padding: "10px",
-          overflowY: "scroll",
-          height: "calc(86.8vh - 20px)",
         }}
       >
         <Box
@@ -72,53 +70,60 @@ function User({ setCurrentChat, setSelectedData, user }) {
           </div>
         </Box>
 
-        {filteredUsers.map((item, index) => (
-          <div
-            key={index}
-            style={{
-              display: "flex",
-              lignItems: "center",
-              justifyContent: "space-between",
-              marginTop: "12px",
-              borderBottome: "1px solid #000",
-              cursor: "pointer",
-              padding: "10px",
-            }}
-            onClick={() => handleOnCLickChat(item)}
-            onMouseEnter={(e) =>
-              (e.currentTarget.style.backgroundColor = "#f0f0f0")
-            }
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.backgroundColor = "transparent")
-            }
-          >
-            <Avatar
-              src={item?.profilePicture}
-              sx={{ width: 50, height: 50, marginRight: "10px" }}
-            />
-            <div style={{ flex: 1 }}>
-              <p
-                style={{
-                  fontSize: "16px",
-                  fontWeight: "bold",
-                  margin: "0",
-                  marginBottom: "2px",
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                }}
-              >
-                {item?.username}
-              </p>
-              {/* <p style={{ fontSize: "14px", color: "#777", margin: "0" }}>
+        <div
+          style={{
+            overflowY: "scroll",
+            height: "calc(76vh - 20px)",
+          }}
+        >
+          {filteredUsers.map((item, index) => (
+            <div
+              key={index}
+              style={{
+                display: "flex",
+                lignItems: "center",
+                justifyContent: "space-between",
+                marginTop: "12px",
+                borderBottome: "1px solid #000",
+                cursor: "pointer",
+                padding: "10px",
+              }}
+              onClick={() => handleOnCLickChat(item)}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.backgroundColor = "#f0f0f0")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.backgroundColor = "transparent")
+              }
+            >
+              <Avatar
+                src={item?.profilePicture}
+                sx={{ width: 50, height: 50, marginRight: "10px" }}
+              />
+              <div style={{ flex: 1 }}>
+                <p
+                  style={{
+                    fontSize: "16px",
+                    fontWeight: "bold",
+                    margin: "0",
+                    marginBottom: "2px",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  {item?.username}
+                </p>
+                {/* <p style={{ fontSize: "14px", color: "#777", margin: "0" }}>
                 {item?.message && item?.message.length > 20
                   ? item?.message.substring(0, 20) + "..."
                   : item?.message}
               </p> */}
-              <p>message...</p>
+                <p>message...</p>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </Box>
     </div>
   );

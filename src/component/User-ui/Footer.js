@@ -9,7 +9,7 @@ function Footer() {
         alignItems: "center",
         //   backgroundColor: "#128C7E",
         color: "#008069",
-        padding: "10px 20px",
+        padding: "0px 20px",
         borderRadius: "10px",
 
         width: "fit-content",

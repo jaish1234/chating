@@ -16,10 +16,9 @@
     padding: 1rem;
 }
 .c3 {
-    border: 0.1rem solid #e1e8dd;
     border-radius: 0.1rem;
     display: flex;
-    margin: 1.5em 3.1em 0 3.1em;
+    margin: 1.5em 3.1em 0 3em;
     align-items: center;
     border-radius: 0.4rem;
 }
