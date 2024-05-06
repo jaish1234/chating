@@ -16,13 +16,17 @@ function Footer({ userProfile }) {
       const socket = new SockJS("http://192.168.29.203:8080/ws");
       const stomp = Stomp.over(socket);
       stomp.connect({}, () => {
+        console.log("WebSocket connected"); // Log connection status
         setStompClient(stomp);
-        stomp.subscribe("/queue/messages", onMessageReceived);
+        stomp.subscribe("/topic/messages", onMessageReceived);
+      }, (error) => {
+        console.error("WebSocket connection error:", error); // Log any connection errors
       });
     }
 
     return () => {
       if (stompClient) {
+        console.log("Disconnecting WebSocket"); // Log disconnection
         stompClient.disconnect();
       }
     };
@@ -30,27 +34,27 @@ function Footer({ userProfile }) {
 
   const onMessageReceived = (message) => {
     const receivedMessage = JSON.parse(message.body);
-    setReceivedMessages((prevMessages) => [
-      ...prevMessages,
-      { username: receivedMessage.username, text: receivedMessage.text },
-    ]);
+    setReceivedMessages((prevMessages) => [...prevMessages, receivedMessage]);
   };
 
   const sendMessage = () => {
-    if (stompClient && userData.message.trim() !== "") {
+    if (!userData.connected && userData.username.trim() !== "") {
+      // If username is provided and not already connected, initiate WebSocket connection
+      connectWebSocket();
+    } else if (stompClient && userData.message.trim() !== "") {
       const message = {
         username: userProfile?.username,
         text: userData.message,
       };
-      stompClient.send("/app/chat", {}, JSON.stringify(message));
-      setReceivedMessages((prevMessages) => [...prevMessages, message]);
+      stompClient.send("/app/chat", {}, JSON.stringify(message), (error) => {
+        if (error) {
+          console.error("Error sending message:", error);
+        } else {
+          console.log("Message sent successfully");
+        }
+      });
       setUserData({ ...userData, message: "" });
     }
-  };
-
-  const handleUserName = (event) => {
-    const { value } = event.target;
-    setUserData({ ...userData, username: value });
   };
 
   const handleMessageChange = (event) => {
@@ -59,22 +63,24 @@ function Footer({ userProfile }) {
   };
 
   const connectWebSocket = () => {
-    setUserData({ ...userData, connected: true });
+    if (userData.username.trim() !== "") {
+      setUserData({ ...userData, connected: true });
+    } else {
+      console.error("Username is required for WebSocket connection.");
+    }
   };
 
   return (
     <div>
       {userData.connected ? (
         <div>
-          <div>
-            <ul>
-              {receivedMessages.map((msg, index) => (
-                <li key={index}>
-                  <strong>{userProfile.username}: </strong> {msg.text}
-                </li>
-              ))}
-            </ul>
-          </div>
+          <ul>
+            {receivedMessages.map((msg, index) => (
+              <li key={index}>
+                <strong>{msg.username}: </strong> {msg.text}
+              </li>
+            ))}
+          </ul>
           <div>
             <input
               type="text"
@@ -87,13 +93,7 @@ function Footer({ userProfile }) {
         </div>
       ) : (
         <div>
-          <input
-            type="text"
-            placeholder="Enter your username"
-            value={userData.username}
-            onChange={handleUserName}
-          />
-          <button onClick={connectWebSocket}>Connect</button>
+          ""
         </div>
       )}
     </div>
