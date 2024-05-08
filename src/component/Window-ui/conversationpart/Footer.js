@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import Stomp from "stompjs";
 import SockJS from "sockjs-client";
 
-function Footer({ userProfile }) {
+function Footer({ userProfile, selectedData }) {
+  console.log("selectedData", selectedData);
   const [userData, setUserData] = useState({
     username: "",
     connected: false,
@@ -16,46 +17,53 @@ function Footer({ userProfile }) {
       const socket = new SockJS("http://192.168.29.203:8080/ws");
       const stomp = Stomp.over(socket);
       stomp.connect({}, () => {
-        console.log("WebSocket connected"); // Log connection status
         setStompClient(stomp);
         stomp.subscribe("/topic/messages", onMessageReceived);
-      }, (error) => {
-        console.error("WebSocket connection error:", error); // Log any connection errors
       });
     }
 
     return () => {
       if (stompClient) {
-        console.log("Disconnecting WebSocket"); // Log disconnection
         stompClient.disconnect();
       }
     };
   }, [userData.connected]);
 
   const onMessageReceived = (message) => {
-    const receivedMessage = JSON.parse(message.body);
-    setReceivedMessages((prevMessages) => [...prevMessages, receivedMessage]);
+    const messageData = JSON.parse(message.body);
+    const newMessages = messageData.messages.map((msg) => ({
+      senderId: msg.senderId,
+      content: msg.content,
+    }));
+    setReceivedMessages((prevMessages) => [...prevMessages, newMessages]);
+    displayNewMessages(newMessages);
   };
 
   const sendMessage = () => {
-    if (!userData.connected && userData.username.trim() !== "") {
-      // If username is provided and not already connected, initiate WebSocket connection
-      connectWebSocket();
-    } else if (stompClient && userData.message.trim() !== "") {
+    if (stompClient && userData.message.trim() !== "") {
       const message = {
-        username: userProfile?.username,
-        text: userData.message,
+        userIds: [userProfile?.username, selectedData?.username],
+        messages: [
+          { senderId: userProfile?.username, content: userData.message },
+        ],
       };
-      stompClient.send("/app/chat", {}, JSON.stringify(message), (error) => {
-        if (error) {
-          console.error("Error sending message:", error);
-        } else {
-          console.log("Message sent successfully");
-        }
-      });
+      // Update UI immediately
+      setReceivedMessages((prevMessages) => [
+        ...prevMessages,
+        { senderId: userProfile?.username, content: userData.message },
+      ]);
+      displayMessage(userProfile?.username, userData.message);
+
+      // Send message to server
+      stompClient.send("/app/chat", {}, JSON.stringify(message));
       setUserData({ ...userData, message: "" });
     }
   };
+
+  // const handleUserName = (event) => {
+  //   const { value } = event.target;
+  //   setUserData({ ...userData, username: value });
+  // };
 
   const handleMessageChange = (event) => {
     const { value } = event.target;
@@ -63,37 +71,66 @@ function Footer({ userProfile }) {
   };
 
   const connectWebSocket = () => {
-    if (userData.username.trim() !== "") {
-      setUserData({ ...userData, connected: true });
-    } else {
-      console.error("Username is required for WebSocket connection.");
+    setUserData({ ...userData, connected: true });
+  };
+
+  const displayNewMessages = (messages) => {
+    // Clear existing messages
+    document.getElementById("chat-messages").innerHTML = "";
+
+    messages.forEach(({ senderId, content }) => {
+      displayMessage(senderId, content);
+    });
+  };
+
+  const displayMessage = (senderId, message) => {
+    console.log("Received message from: " + senderId);
+    console.log("Message content: " + message);
+
+    const messageContainer = document.createElement("div");
+    messageContainer.className = "message-container";
+
+    const messageText = document.createTextNode(
+      senderId ? senderId + ": " + message : message
+    );
+    messageContainer.appendChild(messageText);
+
+    if (senderId === userProfile.username) {
+      messageContainer.classList.add("sender");
     }
+
+    document.getElementById("chat-messages").appendChild(messageContainer);
+    // document.getElementById("chat-messages").scrollTop =
+    //   document.getElementById("chat-messages").scrollHeight;
   };
 
   return (
     <div>
       {userData.connected ? (
         <div>
-          <ul>
-            {receivedMessages.map((msg, index) => (
-              <li key={index}>
-                <strong>{msg.username}: </strong> {msg.text}
-              </li>
-            ))}
-          </ul>
-          <div>
+          <div
+            style={{
+              overflowY: "scroll",
+              height: "calc(88vh - 20px)",
+              padding: "10px 0 10px 0",
+            }}
+          >
+            <div id="chat-messages"></div>
+          </div>
+          <div className="input-container">
             <input
               type="text"
+              id="content"
+              placeholder="Type your message..."
               value={userData.message}
               onChange={handleMessageChange}
-              placeholder="Type your message..."
             />
             <button onClick={sendMessage}>Send</button>
           </div>
         </div>
       ) : (
         <div>
-          ""
+          <button onClick={connectWebSocket}>Connect</button>
         </div>
       )}
     </div>
