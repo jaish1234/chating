@@ -9,9 +9,14 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 import FilterListOutlinedIcon from "@mui/icons-material/FilterListOutlined";
 
-function User({ setCurrentChat, setSelectedData, user }) {
+function User({
+  setCurrentChat,
+  setSelectedData,
+  user,
+  connectWebSocket,
+  disconnectWebSocket,
+}) {
   const [searchTerm, setSearchTerm] = useState("");
-  // const [currentChat, setCurrentChat] = useState(false);
 
   const filteredUsers = Array.isArray(user)
     ? user.filter((item) =>
@@ -19,10 +24,18 @@ function User({ setCurrentChat, setSelectedData, user }) {
       )
     : [];
 
-  const handleOnCLickChat = (data) => {
-    console.log("data",data);
+  const handleOnClickChat = (data, index) => {
     setCurrentChat(true);
     setSelectedData(data);
+    connectWebSocket(data);
+    // if (
+    //   data?.userId !==
+    //   user?.map((item) => {
+    //     return item?.userId;
+    //   })
+    // ) {
+    //   disconnectWebSocket();
+    // }
   };
 
   return (
@@ -89,7 +102,7 @@ function User({ setCurrentChat, setSelectedData, user }) {
                 cursor: "pointer",
                 padding: "10px",
               }}
-              onClick={() => handleOnCLickChat(item )}
+              onClick={() => handleOnClickChat(item, index)}
               onMouseEnter={(e) =>
                 (e.currentTarget.style.backgroundColor = "#f0f0f0")
               }

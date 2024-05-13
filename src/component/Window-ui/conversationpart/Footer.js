@@ -1,58 +1,23 @@
 import React, { useState, useEffect } from "react";
-import Stomp from "stompjs";
-import SockJS from "sockjs-client";
 
-function Footer({ userProfile }) {
-  const [userData, setUserData] = useState({
-    username: "",
-    connected: false,
-    message: "",
-  });
-  const [receivedMessages, setReceivedMessages] = useState([]);
-  const [stompClient, setStompClient] = useState(null);
+function Footer({ userProfile, selectedData, setUserData, userData, setReceivedMessages, stompClient }) {
 
-  useEffect(() => {
-    if (userData.connected) {
-      const socket = new SockJS("http://192.168.29.203:8080/ws");
-      const stomp = Stomp.over(socket);
-      stomp.connect({}, () => {
-        console.log("WebSocket connected"); // Log connection status
-        setStompClient(stomp);
-        stomp.subscribe("/topic/messages", onMessageReceived);
-      }, (error) => {
-        console.error("WebSocket connection error:", error); // Log any connection errors
-      });
-    }
-
-    return () => {
-      if (stompClient) {
-        console.log("Disconnecting WebSocket"); // Log disconnection
-        stompClient.disconnect();
-      }
-    };
-  }, [userData.connected]);
-
-  const onMessageReceived = (message) => {
-    const receivedMessage = JSON.parse(message.body);
-    setReceivedMessages((prevMessages) => [...prevMessages, receivedMessage]);
-  };
-
-  const sendMessage = () => {
-    if (!userData.connected && userData.username.trim() !== "") {
-      // If username is provided and not already connected, initiate WebSocket connection
-      connectWebSocket();
-    } else if (stompClient && userData.message.trim() !== "") {
+  const sendMessage = (e) => {
+    if (stompClient && userData.message.trim() !== "") {
       const message = {
-        username: userProfile?.username,
-        text: userData.message,
+        userIds: [userProfile?.userId, selectedData?.userId],
+        messages: [
+          { senderId: userProfile?.userId, content: userData?.message },
+        ],
       };
-      stompClient.send("/app/chat", {}, JSON.stringify(message), (error) => {
-        if (error) {
-          console.error("Error sending message:", error);
-        } else {
-          console.log("Message sent successfully");
-        }
-      });
+      // console.log("message", message);
+      // setReceivedMessages((prevMessages) => [
+      //   ...prevMessages,
+      //   { senderId: userProfile?.userId, content: userData.message },
+      // ]);
+      // displayMessage(userProfile?.userId, userData.message);
+
+      stompClient.send(`/app/messages/${selectedData?.userId}`, {}, JSON.stringify(message));
       setUserData({ ...userData, message: "" });
     }
   };
@@ -62,40 +27,29 @@ function Footer({ userProfile }) {
     setUserData({ ...userData, message: value });
   };
 
-  const connectWebSocket = () => {
-    if (userData.username.trim() !== "") {
-      setUserData({ ...userData, connected: true });
-    } else {
-      console.error("Username is required for WebSocket connection.");
-    }
-  };
-
   return (
     <div>
-      {userData.connected ? (
         <div>
-          <ul>
-            {receivedMessages.map((msg, index) => (
-              <li key={index}>
-                <strong>{msg.username}: </strong> {msg.text}
-              </li>
-            ))}
-          </ul>
-          <div>
+          <div
+            style={{
+              overflowY: "scroll",
+              height: "calc(88vh - 20px)",
+              padding: "10px 0 10px 0",
+            }}
+          >
+            <div id="chat-messages"></div>
+          </div>
+          <div className="input-container">
             <input
               type="text"
+              id="content"
+              placeholder="Type your message..."
               value={userData.message}
               onChange={handleMessageChange}
-              placeholder="Type your message..."
             />
-            <button onClick={sendMessage}>Send</button>
+            <button onClick={(e) => sendMessage(e)}>Send</button>
           </div>
         </div>
-      ) : (
-        <div>
-          ""
-        </div>
-      )}
     </div>
   );
 }

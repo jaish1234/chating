@@ -3,11 +3,7 @@ import Header from "./Header";
 import Conversation from "./Conversation";
 import Footer from "./Footer";
 
-const Chatting = ({ selectedData, userProfile, userId }) => {
-  
-
-  console.log("userprofile+++++", userProfile);
-
+const Chatting = ({ selectedData, userProfile, setUserData, userData, setReceivedMessages, displayMessage, stompClient }) => {
   return (
     <>
       <div style={{ overflowY: "hidden" }}>
@@ -20,13 +16,17 @@ const Chatting = ({ selectedData, userProfile, userId }) => {
               overflowY: "auto",
             }}
           >
-            <Conversation 
-            // messages={messages} 
-            />
+            <Conversation/>
           </div>
           <div style={{ width: "30%" }}>
-            <Footer userProfile={userProfile} 
-            // onSend={sendMessage} 
+            <Footer
+              userProfile={userProfile}
+              selectedData={selectedData}
+              userData={userData}
+              setUserData={setUserData}
+              setReceivedMessages={setReceivedMessages}
+              displayMessage={displayMessage}
+              stompClient={stompClient}
             />
           </div>
         </div>
