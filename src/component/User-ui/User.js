@@ -20,6 +20,7 @@ function User({ setCurrentChat, setSelectedData, user }) {
     : [];
 
   const handleOnCLickChat = (data) => {
+    console.log("data",data);
     setCurrentChat(true);
     setSelectedData(data);
   };
@@ -88,7 +89,7 @@ function User({ setCurrentChat, setSelectedData, user }) {
                 cursor: "pointer",
                 padding: "10px",
               }}
-              onClick={() => handleOnCLickChat(item)}
+              onClick={() => handleOnCLickChat(item )}
               onMouseEnter={(e) =>
                 (e.currentTarget.style.backgroundColor = "#f0f0f0")
               }
