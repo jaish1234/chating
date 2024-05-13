@@ -59,7 +59,7 @@ function Maindashboard() {
   };
 
   // websocket functionality
-  const connectWebSocket = () => {
+  const connectWebSocket = (data) => {
     if (!userData.connected) {
       const socket = new SockJS("http://192.168.29.203:8080/ws");
       const stomp = Stomp.over(socket);
@@ -70,14 +70,24 @@ function Maindashboard() {
         // onMessageReceived()
         stomp.subscribe(
           `/user/${userProfile?.userId}/topic/messages`,
-          onMessageReceived()
+          onMessageReceived(data)
         );
       });
     }
   };
+  console.log("selectedData +++++++++++*********", selectedData?.userId);
 
-  const onMessageReceived = async (message) => {
-    await axios.get(`http://192.168.29.203:8080/v1/get/messages?userId1=${userProfile?.userId}&userId2=${selectedData?.userId}`)
+  const onMessageReceived = async (data) => {
+    console.log("selectedData?.userId", selectedData?.userId);
+    await axios
+      .get(
+        `http://192.168.29.203:8080/v1/get/messages?userId1=${userProfile?.userId}&userId2=${data?.userId}`,
+        {
+          headers: {
+            Authorization: localStorage.getItem("jwtToken"),
+          },
+        }
+      )
       .then((response) => {
         console.log("websocket response", response);
       })

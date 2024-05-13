@@ -27,8 +27,7 @@ function User({
   const handleOnClickChat = (data, index) => {
     setCurrentChat(true);
     setSelectedData(data);
-    connectWebSocket();
-    disconnectWebSocket();
+    connectWebSocket(data);
     // if (
     //   data?.userId !==
     //   user?.map((item) => {
