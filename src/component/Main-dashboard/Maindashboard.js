@@ -1,26 +1,30 @@
 import React, { useState, useEffect } from "react";
 import { Box } from "@mui/material";
 import User from "../User-ui/User";
-
 import Chat from "../Window-ui/Chat";
 import Chatting from "../Window-ui/conversationpart/Chatting";
 import { GetUserData } from "../Api/Api";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
-import { useNavigate } from "react-router-dom";
-
 import Header from "../User-ui/Header";
 import Footer from "../User-ui/Footer";
+import SockJS from "sockjs-client";
+import Stomp from "stompjs";
 
 function Maindashboard() {
+  const [userData, setUserData] = useState({
+    username: "",
+    connected: false,
+    message: "",
+  });
+  const [receivedMessages, setReceivedMessages] = useState([]);
+  const [stompClient, setStompClient] = useState(null);
   const [currentChat, setCurrentChat] = useState(false);
   const [selectedData, setSelectedData] = useState();
   const [user, setUser] = useState([]);
   const [userProfile, setUserProfile] = useState();
   const token = localStorage.getItem("jwtToken");
   const decoded = jwtDecode(token);
-  const navigate = useNavigate();
-  
 
   useEffect(() => {
     addUser();
@@ -54,29 +58,77 @@ function Maindashboard() {
       });
   };
 
-  function removeCookie(name) {
-    const expirationDate = new Date();
+  // websocket functionality
+  const connectWebSocket = () => {
+    if (!userData.connected) {
+      const socket = new SockJS("http://192.168.29.203:8080/ws");
+      const stomp = Stomp.over(socket);
+      stomp.connect({}, () => {
+        setStompClient(stomp);
+        console.log("WebSocket connected");
+        setUserData({ ...userData, connected: true, stomp, user });
+        // onMessageReceived()
+        stomp.subscribe(
+          `/user/${userProfile?.userId}/topic/messages`,
+          onMessageReceived()
+        );
+      });
+    }
+  };
 
-    const expires = "expires=" + expirationDate.toUTCString();
-    document.cookie = `${name}=; ${expires}; path=/`;
-  }
-
-  const handleLogout = async () => {
-    const body = {};
-    await axios
-      .post("http://192.168.29.203:8080/v1/logout/user", body)
+  const onMessageReceived = async (message) => {
+    await axios.get(`http://192.168.29.203:8080/v1/get/messages?userId1=${userProfile?.userId}&userId2=${selectedData?.userId}`)
       .then((response) => {
-        localStorage.removeItem("jwtToken");
-        localStorage.removeItem("uid");
-        localStorage.removeItem("userId");
-        removeCookie("jwtToken");
-
-        console.log("logout response", response);
-        navigate("/login");
+        console.log("websocket response", response);
       })
       .catch((error) => {
-        console.log("logout error", error);
+        console.log("websocket error", error);
       });
+  };
+
+  // const onMessageReceived = (message) => {
+  //   console.log("message ***********+", message);
+  //   const messageData = JSON.parse(message.body);
+  //   console.log("messageData ++++++++++++++++", messageData);
+  //   const newMessages = messageData.messages.map((msg) => ({
+  //     senderId: msg.senderId,
+  //     content: msg.content,
+  //   }));
+  //   setReceivedMessages((prevMessages) => [...prevMessages, newMessages]);
+  //   displayNewMessages(newMessages);
+  // };
+
+  // const displayNewMessages = (messages) => {
+  //   document.getElementById("chat-messages").innerHTML = "";
+
+  //   messages.forEach(({ senderId, content }) => {
+  //     displayMessage(senderId, content);
+  //   });
+  // };
+
+  // const displayMessage = (senderId, message) => {
+  //   const messageContainer = document.createElement("div");
+  //   messageContainer.className = "message-container";
+
+  //   const messageText = document.createTextNode(
+  //     senderId ? senderId + ": " + message : message
+  //   );
+  //   messageContainer.appendChild(messageText);
+
+  //   if (senderId === userProfile.username) {
+  //     messageContainer.classList.add("sender");
+  //   }
+  //   document.getElementById("chat-messages").appendChild(messageContainer);
+  // };
+
+  const disconnectWebSocket = () => {
+    const { stomp } = userData;
+    if (stomp && userData.connected) {
+      stomp.disconnect(() => {
+        console.log("WebSocket disconnected");
+        setUserData({ ...userData, connected: false, stomp: null });
+      });
+    }
   };
 
   return (
@@ -84,18 +136,30 @@ function Maindashboard() {
       <div style={{ overflowY: "hidden" }}>
         <Box sx={{ display: "flex" }}>
           <div style={{ width: "26rem" }}>
-            <Header userProfile={userProfile} handleLogout={handleLogout} />
+            <Header userProfile={userProfile} />
             <User
               setCurrentChat={setCurrentChat}
               setSelectedData={setSelectedData}
               user={user}
+              userData={userData}
+              connectWebSocket={connectWebSocket}
+              disconnectWebSocket={disconnectWebSocket}
             />
 
             <Footer />
           </div>
           <div style={{ width: "74rem" }}>
             {currentChat ? (
-              <Chatting selectedData={selectedData} userId={decoded?.userId}  userProfile={userProfile} />
+              <Chatting
+                selectedData={selectedData}
+                // displayMessage={displayMessage}
+                setReceivedMessages={setReceivedMessages}
+                stompClient={stompClient}
+                userData={userData}
+                setUserData={setUserData}
+                userId={decoded?.userId}
+                userProfile={userProfile}
+              />
             ) : (
               <Chat />
             )}

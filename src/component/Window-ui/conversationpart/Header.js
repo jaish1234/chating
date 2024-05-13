@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Avatar, Box, IconButton, TextField } from "@mui/material";
+import { Avatar, Box } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import ChatBubbleIcon from "@mui/icons-material/ChatBubble";
