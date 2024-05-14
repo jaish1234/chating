@@ -58,7 +58,7 @@ function Maindashboard() {
       });
   };
 
-  // websocket functionality
+  
   const connectWebSocket = (data) => {
     if (!userData.connected) {
       const socket = new SockJS("http://192.168.29.203:8080/ws");
@@ -70,14 +70,14 @@ function Maindashboard() {
         // onMessageReceived()
         stomp.subscribe(
           `/user/${userProfile?.userId}/topic/messages`,
-          onMessageReceived(data)
+          (message) => onMessageReceived(message, data)
         );
       });
     }
   };
   console.log("selectedData +++++++++++*********", selectedData?.userId);
 
-  const onMessageReceived = async (data) => {
+  const onMessageReceived = async (message, data) => {
     console.log("selectedData?.userId", selectedData?.userId);
     await axios
       .get(
