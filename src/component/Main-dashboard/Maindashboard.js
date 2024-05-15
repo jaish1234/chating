@@ -58,7 +58,6 @@ function Maindashboard() {
       });
   };
 
-  
   const connectWebSocket = (data) => {
     if (!userData.connected) {
       const socket = new SockJS("http://192.168.29.203:8080/ws");
@@ -67,7 +66,6 @@ function Maindashboard() {
         setStompClient(stomp);
         console.log("WebSocket connected");
         setUserData({ ...userData, connected: true, stomp, user });
-        // onMessageReceived()
         stomp.subscribe(
           `/user/${userProfile?.userId}/topic/messages`,
           (message) => onMessageReceived(message, data)
@@ -75,10 +73,8 @@ function Maindashboard() {
       });
     }
   };
-  console.log("selectedData +++++++++++*********", selectedData?.userId);
 
   const onMessageReceived = async (message, data) => {
-    console.log("selectedData?.userId", selectedData?.userId);
     await axios
       .get(
         `http://192.168.29.203:8080/v1/get/messages?userId1=${userProfile?.userId}&userId2=${data?.userId}`,
@@ -90,6 +86,12 @@ function Maindashboard() {
       )
       .then((response) => {
         console.log("websocket response", response);
+        const messageData = JSON.parse(message.body);
+        const newMessage = {
+          senderId: messageData.senderId,
+          content: messageData.content,
+        };
+        setReceivedMessages((prevMessages) => [...prevMessages, newMessage]);
       })
       .catch((error) => {
         console.log("websocket error", error);
@@ -162,7 +164,7 @@ function Maindashboard() {
             {currentChat ? (
               <Chatting
                 selectedData={selectedData}
-                // displayMessage={displayMessage}
+                receivedMessages={receivedMessages}
                 setReceivedMessages={setReceivedMessages}
                 stompClient={stompClient}
                 userData={userData}

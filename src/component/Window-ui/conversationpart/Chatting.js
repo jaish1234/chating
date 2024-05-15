@@ -3,7 +3,7 @@ import Header from "./Header";
 import Conversation from "./Conversation";
 import Footer from "./Footer";
 
-const Chatting = ({ selectedData, userProfile, setUserData, userData, setReceivedMessages, displayMessage, stompClient }) => {
+const Chatting = ({ selectedData, userProfile, setUserData, userData, setReceivedMessages, receivedMessages, displayMessage, stompClient }) => {
   return (
     <>
       <div style={{ overflowY: "hidden" }}>
@@ -24,6 +24,7 @@ const Chatting = ({ selectedData, userProfile, setUserData, userData, setReceive
               selectedData={selectedData}
               userData={userData}
               setUserData={setUserData}
+              receivedMessages={receivedMessages}
               setReceivedMessages={setReceivedMessages}
               displayMessage={displayMessage}
               stompClient={stompClient}
