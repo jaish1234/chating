@@ -76,10 +76,7 @@ function Login1() {
               scope: "/",
             }
           );
-          console.log(
-            "Service Worker registered with scope:",
-            registration.scope
-          );
+          
         } catch (error) {
           console.error("Service Worker registration failed:", error);
         }
@@ -94,8 +91,7 @@ function Login1() {
                       .then((response) => {
                         const decoded = jwtDecode(response?.data?.token);
                         localStorage.setItem("jwtToken", response?.data?.token);
-                        console.log("decode ", decoded);  
-
+                       
                         const body = {
                           userId: decoded?.userId,
                           deviceToken: currentToken,
@@ -106,17 +102,14 @@ function Login1() {
                             body
                           )
                           .then((deviceresponse) => {
-                            console.log(
-                              "Device token Response*****",
-                              deviceresponse
-                            );
+                            
                             navigate("/main_dashboard");
                           })
                           .catch((devicerror) => {
                             console.log("Device error", devicerror);
                           });
 
-                        console.log("User data:", response.data);
+                        
                       })
                       .catch((error) => {
                         console.error("Error fetching user data:", error);

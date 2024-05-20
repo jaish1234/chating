@@ -29,6 +29,7 @@ function Maindashboard() {
   useEffect(() => {
     addUser();
     userLoginProfilePicture();
+    onMessageReceived();
   }, []);
 
   const addUser = async () => {
@@ -85,13 +86,20 @@ function Maindashboard() {
         }
       )
       .then((response) => {
-        console.log("websocket response", response);
-        const messageData = JSON.parse(message.body);
-        const newMessage = {
-          senderId: messageData.senderId,
-          content: messageData.content,
-        };
-        setReceivedMessages((prevMessages) => [...prevMessages, newMessage]);
+        console.log("websocket response", response?.data?.[0]?.messages);
+
+        const newMessage = [
+          ...receivedMessages,
+          {
+            senderId: response?.data?.[0]?.messages?.map((item) => {
+              return item?.senderId;
+            }),
+            content: response?.data?.[0]?.messages?.map((item) => {
+              return item?.content;
+            }),
+          },
+        ];
+        setReceivedMessages(newMessage);
       })
       .catch((error) => {
         console.log("websocket error", error);
