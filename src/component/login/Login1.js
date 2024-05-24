@@ -246,7 +246,7 @@ function Login1() {
         })
         .catch((err) => {
           console.log(err);
-          setLoginError("Login failed. Please check your credentials.");
+          setLoginError("Login failed. Please check your credentials.", err);
         });
     } else {
       console.log("validation fails, Error", errors);

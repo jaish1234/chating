@@ -1,21 +1,10 @@
 import React, { useState } from "react";
-import {
-  Avatar,
-  Box,
-  IconButton,
-  InputAdornment,
-  TextField,
-} from "@mui/material";
+import { Avatar, Box, IconButton, InputAdornment, TextField } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import FilterListOutlinedIcon from "@mui/icons-material/FilterListOutlined";
 
-function User({
-  setCurrentChat,
-  setSelectedData,
-  user,
-  connectWebSocket,
-  disconnectWebSocket,
-}) {
+function User({ setCurrentChat, setSelectedData, user, connectWebSocket }) {
+
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredUsers = Array.isArray(user)
@@ -24,36 +13,16 @@ function User({
       )
     : [];
 
-  const handleOnClickChat = (data, index) => {
+  const handleOnClickChat = (data) => {
     setCurrentChat(true);
     setSelectedData(data);
     connectWebSocket(data);
-    // if (
-    //   data?.userId !==
-    //   user?.map((item) => {
-    //     return item?.userId;
-    //   })
-    // ) {
-    //   disconnectWebSocket();
-    // }
   };
 
   return (
     <div>
-      <Box
-        sx={{
-          width: "100%",
-          background: "#fff",
-          padding: "10px",
-        }}
-      >
-        <Box
-          sx={{
-            width: "23%",
-            background: "#fff",
-            "@media (max-width: 600px)": { width: "100%" },
-          }}
-        >
+      <Box sx={{ width: "100%", background: "#fff", padding: "10px"}}>
+        <Box sx={{ width: "23%", background: "#fff", "@media (max-width: 600px)": { width: "100%" }}}>
           <div style={{ display: "flex", alignItems: "center" }}>
             <div style={{ flex: 1 }}>
               <TextField
@@ -69,13 +38,7 @@ function User({
                       </IconButton>
                     </InputAdornment>
                   ),
-                  style: {
-                    background: "#eceff1",
-                    width: "21rem",
-                    padding: "0",
-                    height: "auto",
-                  },
-                }}
+                  style: { background: "#eceff1", width: "21rem", padding: "0", height: "auto",}}}
               />
             </div>
             <div style={{ marginLeft: "12px" }}>
@@ -84,12 +47,7 @@ function User({
           </div>
         </Box>
 
-        <div
-          style={{
-            overflowY: "scroll",
-            height: "calc(76vh - 20px)",
-          }}
-        >
+        <div style={{overflowY: "scroll", height: "calc(76vh - 20px)",}}>
           {filteredUsers.map((item, index) => (
             <div
               key={index}
@@ -103,17 +61,10 @@ function User({
                 padding: "10px",
               }}
               onClick={() => handleOnClickChat(item, index)}
-              onMouseEnter={(e) =>
-                (e.currentTarget.style.backgroundColor = "#f0f0f0")
-              }
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.backgroundColor = "transparent")
-              }
+              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#f0f0f0")}
+              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
             >
-              <Avatar
-                src={item?.profilePicture}
-                sx={{ width: 50, height: 50, marginRight: "10px" }}
-              />
+              <Avatar src={item?.profilePicture} sx={{ width: 50, height: 50, marginRight: "10px" }}/>
               <div style={{ flex: 1 }}>
                 <p
                   style={{

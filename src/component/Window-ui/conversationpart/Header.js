@@ -9,6 +9,8 @@ import VideocamIcon from '@mui/icons-material/Videocam';
 function Header({ selectedData }) {
   const [calling, setCalling] = useState(false);
   const [incomingCall, setIncomingCall] = useState(false);
+  const [videocall, setVideocall] = useState(false)
+  const [videoincomingCall, setVideoIncomingCall] = useState(false)
 
   const startCall = () => {
     setCalling(true);
@@ -23,6 +25,8 @@ function Header({ selectedData }) {
   const receiveCall = () => {
     setIncomingCall(true);
   };
+
+  
 
   return (
     <Box
@@ -82,17 +86,15 @@ function Header({ selectedData }) {
               <IconButton onClick={receiveCall}>
                 <CallIcon
                   style={{
-                    marginRight: "10px",
                     color: "#009688",
                     fontSize: "24px",
                     cursor: "pointer",
                   }}
                 />
               </IconButton>
-              <IconButton>
+              <IconButton onClick={receiveCall}>
                 <VideocamIcon
                   style={{
-                    marginRight: "10px",
                     color: "#616161",
                     fontSize: "24px",
                     cursor: "pointer",

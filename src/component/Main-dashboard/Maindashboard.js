@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { Box } from "@mui/material";
-import User from "../User-ui/User";
-import Chat from "../Window-ui/Chat";
-import Chatting from "../Window-ui/conversationpart/Chatting";
-import { GetUserData } from "../Api/Api";
-import axios from "axios";
-import { jwtDecode } from "jwt-decode";
-import Header from "../User-ui/Header";
-import Footer from "../User-ui/Footer";
-import SockJS from "sockjs-client";
-import Stomp from "stompjs";
+import React, { useState, useEffect } from "react"
+import { Box } from "@mui/material"
+import User from "../User-ui/User"
+import Chat from "../Window-ui/Chat"
+import Chatting from "../Window-ui/conversationpart/Chatting"
+import { GetUserData } from "../Api/Api"
+import axios from "axios"
+import { jwtDecode } from "jwt-decode"
+import Header from "../User-ui/Header"
+import Footer from "../User-ui/Footer"
+import SockJS from "sockjs-client"
+import Stomp from "stompjs"
 
 function Maindashboard() {
   const [userData, setUserData] = useState({
@@ -23,6 +23,7 @@ function Maindashboard() {
   const [selectedData, setSelectedData] = useState();
   const [user, setUser] = useState([]);
   const [userProfile, setUserProfile] = useState();
+  const [currentConnectedUserId, setCurrentConnectedUserId] = useState(null);
   const token = localStorage.getItem("jwtToken");
   const decoded = jwtDecode(token);
 
@@ -60,13 +61,17 @@ function Maindashboard() {
   };
 
   const connectWebSocket = (data) => {
-    if (!userData.connected) {
+    if (currentConnectedUserId !== data.userId) {
+      if (stompClient && stompClient.connected) {
+        disconnectWebSocket();
+      }
       const socket = new SockJS("http://192.168.29.203:8080/ws");
       const stomp = Stomp.over(socket);
       stomp.connect({}, () => {
         setStompClient(stomp);
         console.log("WebSocket connected");
         setUserData({ ...userData, connected: true, stomp, user });
+        setCurrentConnectedUserId(data.userId);
         stomp.subscribe(
           `/user/${userProfile?.userId}/topic/messages`,
           (message) => onMessageReceived(message, data)
@@ -87,18 +92,12 @@ function Maindashboard() {
       )
       .then((response) => {
         console.log("websocket response", response?.data?.[0]?.messages);
-
-        const newMessage = [
-          ...receivedMessages,
-          {
-            senderId: response?.data?.[0]?.messages?.map((item) => {
-              return item?.senderId;
-            }),
-            content: response?.data?.[0]?.messages?.map((item) => {
-              return item?.content;
-            }),
-          },
-        ];
+        const newMessage = response?.data?.[0]?.messages?.map((msg) => ({
+          senderId: msg.senderId,
+          content: msg.content,
+          status: msg.senderId === userProfile?.userId ? msg.status : "delivered"
+        }));
+        // setReceivedMessages((prevMessages) => [...prevMessages, ...newMessage]);
         setReceivedMessages(newMessage);
       })
       .catch((error) => {
@@ -106,47 +105,13 @@ function Maindashboard() {
       });
   };
 
-  // const onMessageReceived = (message) => {
-  //   console.log("message ***********+", message);
-  //   const messageData = JSON.parse(message.body);
-  //   console.log("messageData ++++++++++++++++", messageData);
-  //   const newMessages = messageData.messages.map((msg) => ({
-  //     senderId: msg.senderId,
-  //     content: msg.content,
-  //   }));
-  //   setReceivedMessages((prevMessages) => [...prevMessages, newMessages]);
-  //   displayNewMessages(newMessages);
-  // };
-
-  // const displayNewMessages = (messages) => {
-  //   document.getElementById("chat-messages").innerHTML = "";
-
-  //   messages.forEach(({ senderId, content }) => {
-  //     displayMessage(senderId, content);
-  //   });
-  // };
-
-  // const displayMessage = (senderId, message) => {
-  //   const messageContainer = document.createElement("div");
-  //   messageContainer.className = "message-container";
-
-  //   const messageText = document.createTextNode(
-  //     senderId ? senderId + ": " + message : message
-  //   );
-  //   messageContainer.appendChild(messageText);
-
-  //   if (senderId === userProfile.username) {
-  //     messageContainer.classList.add("sender");
-  //   }
-  //   document.getElementById("chat-messages").appendChild(messageContainer);
-  // };
-
   const disconnectWebSocket = () => {
     const { stomp } = userData;
     if (stomp && userData.connected) {
       stomp.disconnect(() => {
         console.log("WebSocket disconnected");
         setUserData({ ...userData, connected: false, stomp: null });
+        setCurrentConnectedUserId(null);
       });
     }
   };
@@ -162,10 +127,9 @@ function Maindashboard() {
               setSelectedData={setSelectedData}
               user={user}
               userData={userData}
+              userProfile={userProfile}
               connectWebSocket={connectWebSocket}
-              disconnectWebSocket={disconnectWebSocket}
             />
-
             <Footer />
           </div>
           <div style={{ width: "74rem" }}>
