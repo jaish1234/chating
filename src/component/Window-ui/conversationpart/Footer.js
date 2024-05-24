@@ -189,6 +189,12 @@ function Footer({
     return null;
   };
 
+  const handleKeyPress = (event) =>{
+    if(event.key==="Enter"){
+      sendMessage(event);
+    }
+  }
+
   return (
     <div>
       <div>
@@ -216,6 +222,7 @@ function Footer({
             placeholder="Type your message..."
             value={userData?.message}
             onChange={handleMessageChange}
+            onKeyPress={(event)=>handleKeyPress(event)}
           />
           <button onClick={(e) => sendMessage(e)}>Send</button>
         </div>
