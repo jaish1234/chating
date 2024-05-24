@@ -9,7 +9,7 @@ const Chatting = ({ selectedData, userProfile, setUserData, userData, setReceive
       <div style={{ overflowY: "hidden" }}>
         <Header selectedData={selectedData} />
         <div style={{ display: "flex" }}>
-          <div
+          {/* <div
             style={{
               width: "70%",
               height: "calc(100vh - 140px)",
@@ -17,8 +17,8 @@ const Chatting = ({ selectedData, userProfile, setUserData, userData, setReceive
             }}
           >
             <Conversation/>
-          </div>
-          <div style={{ width: "30%" }}>
+          </div> */}
+          <div style={{ width: "100%" }}>
             <Footer
               userProfile={userProfile}
               selectedData={selectedData}

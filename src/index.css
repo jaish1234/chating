@@ -61,5 +61,68 @@ body {
   margin-top: 8rem;
 }
 
+/* Add this CSS to your project's stylesheet */
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+#chat-messages {
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+  background-color: #e5ddd5;
+}
+
+.message {
+  display: inline-block;
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 8px;
+  max-width: 60%;
+}
+
+.message.sent {
+  background-color: #dcf8c6;
+  align-self: flex-end;
+  text-align: right;
+}
+
+.message.received {
+  background-color: #fff;
+  align-self: flex-start;
+  text-align: left;
+}
+
+.input-container {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: #f0f0f0;
+  border-top: 1px solid #ccc;
+}
+
+.input-container input {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 20px;
+  margin-right: 10px;
+  background-color: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.input-container button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 50%;
+  background-color: #075e54;
+  color: #fff;
+  cursor: pointer;
+}
+
+
 
 

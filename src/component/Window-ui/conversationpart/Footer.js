@@ -50,6 +50,12 @@ function Footer({
     setMessage(event.target.value);
   };
 
+  const handleKeyPress = (event) =>{
+    if(event.key==="Enter"){
+      sendMessage(event);
+    }
+  }
+
   return (
     <div>
       <div>
@@ -69,12 +75,12 @@ function Footer({
               ) : (
                 <div>{msg?.content}</div>
               )}
-              {" === "}
+              {/* {" === "}
               {Array.isArray(msg?.senderId) ? (
                 msg.senderId.map((item1, i) => <div key={i}>{item1}</div>)
               ) : (
                 <div>{msg?.senderId}</div>
-              )}
+              )} */}
             </div>
           ))}
         </div>
@@ -85,6 +91,7 @@ function Footer({
             placeholder="Type your message..."
             value={userData?.message}
             onChange={handleMessageChange}
+            onKeyPress={(event)=>handleKeyPress(event)}
           />
           <button onClick={(e) => sendMessage(e)}>Send</button>
         </div>
