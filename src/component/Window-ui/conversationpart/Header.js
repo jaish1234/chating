@@ -25,9 +25,7 @@ function Header({ selectedData }) {
   const receiveCall = () => {
     setIncomingCall(true);
   };
-
   
-
   return (
     <Box
       sx={{
