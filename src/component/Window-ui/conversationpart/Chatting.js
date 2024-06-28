@@ -2,11 +2,22 @@ import React, { useState } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 
-const Chatting = ({ selectedData, userProfile, setUserData, userData, setReceiverMessages, receiverMessages, stompClient }) => {
+const Chatting = ({ selectedData, userProfile,startCall, setUserData, userData, peerConnection, setReceiverMessages, receiverMessages,acceptCall,declineCall, stompClient, setPeerConnection,setCallData,setIncomingCall,callData,incomingCall }) => {
   return (
     <>
       <div style={{ overflowY: "hidden" }}>
-        <Header selectedData={selectedData} />
+        <Header
+          selectedData={selectedData}
+          setPeerConnection={setPeerConnection}
+          userProfile={userProfile}
+          stompClient={stompClient}
+          declineCall={declineCall}
+          peerConnection={peerConnection}
+          incomingCall={incomingCall}
+          acceptCall={acceptCall}
+          setIncomingCall={setIncomingCall}
+          startCall={startCall}
+        />
         <div style={{ display: "flex" }}>
           <div style={{ width: "100%" }}>
             <Footer

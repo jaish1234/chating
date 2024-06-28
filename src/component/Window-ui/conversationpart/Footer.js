@@ -137,6 +137,8 @@ import React, { useEffect, useRef } from "react";
 import { v4 as uuidv4 } from "uuid";
 import DoneOutlinedIcon from "@mui/icons-material/DoneOutlined";
 import DoneAllOutlinedIcon from "@mui/icons-material/DoneAllOutlined";
+import what from "../../../assets/img/what.png"
+// import EmojiPicker from 'emoji-picker-react';
 
 function Footer({ userProfile, selectedData, setUserData, userData, receiverMessages, setReceiverMessages, stompClient }) {
   const scrollRef = useRef(null);
@@ -153,7 +155,7 @@ function Footer({ userProfile, selectedData, setUserData, userData, receiverMess
   const sendMessage = (e) => {
     e.preventDefault();
     if (stompClient && stompClient.connected && userData?.message.trim() !== "") {
-      const timestamp = Date.now();
+      const createdAt = Date.now();
       const uuId = uuidv4();
       const messageToSend = {
         userIds: [userProfile?.userId, selectedData?.userId],
@@ -164,7 +166,7 @@ function Footer({ userProfile, selectedData, setUserData, userData, receiverMess
             receiverId: selectedData?.userId,
             content: userData?.message,
             status: "SENT",
-            timestamp
+            createdAt
           },
         ],
       };
@@ -189,19 +191,22 @@ function Footer({ userProfile, selectedData, setUserData, userData, receiverMess
         receiverId: selectedData?.userId,
         content: userData.message,
         status: "SENT",
-        timestamp
+        createdAt
       }; 
       setReceiverMessages((prevMessages) => [...prevMessages, newMessage]);
       setUserData({ ...userData, message: "" });
     }
   };
 
-  // const formatMessageTime = (timestamp) => {
-  //   const date = new Date(timestamp);
-  //   const hours = date.getHours();
-  //   const minutes = date.getMinutes();
-  //   return `${hours}:${minutes}`;
-  // };
+  const formatTimestamp = (timestamp) => {
+    const date = new Date(timestamp);
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    const formattedHours = hours % 12 || 12;
+    return `${formattedHours}:${formattedMinutes} ${ampm}`;
+  };
 
   const handleMessageChange = (event) => {
     const { value } = event.target;
@@ -228,44 +233,53 @@ function Footer({ userProfile, selectedData, setUserData, userData, receiverMess
       sendMessage(event);
     }
   };
-  // console.log("user profil id : ", userProfile);
+
   return (
-    <div>
-      <div style={{ display: "flex", flexDirection: "column", height: "92vh", "@media (max-width: 600px)": { height: "70.3vh" } }}>
-        <div ref={scrollRef} id="chat-messages" style={{ overflowY: "scroll", backgroundColor: "#e5ddd5", height: "calc(88vh - 20px)", padding: "10px 0 10px 0",}}>
-          {receiverMessages?.map((msg, index) => (
-            <div key={index} style={{display: "flex",justifyContent: msg?.senderId === userProfile?.userId ? "flex-end" : "flex-start",}}>
-              <div style={{ display: "flex", alignItems: "center", maxWidth: "60%", margin: "2px 10px", padding: "5px 10px", borderRadius: "10px", background:   msg.senderId === userProfile?.userId ? "#DCF8C6" : "#FFF", color: "#000", boxShadow: "0 1px 1px rgba(0, 0, 0, 0.1)", position: "relative", wordBreak: "break-word",}}>
-                <p style={{ fontSize: "15px" }}>{msg?.content}</p>
-                <span style={{ display: "flex", justifyContent: "flex-end", marginLeft: "5px",}}>
-                  {/* {getMessageStatus(msg)}  */}
-                  {/* {console.log("msg : ", msg)} */}
-                  {msg.senderId === userProfile?.userId &&
-                    (msg.status === "READ" ? (
-                      <DoneAllOutlinedIcon style={{ color: "#53bdeb" }} />
-                    ) : msg.status === "DELIVERED" ? (
-                      <DoneAllOutlinedIcon />
-                    ) : (
-                      <DoneOutlinedIcon />
-                    ))}
-                </span>
-                {/* <p>{msg.createdAt}</p> */}
-                {/* <p>{formatMessageTime(msg.createdAt)}</p> */}
+    <div style={{ display: "flex", flexDirection: "column", height: "92vh"}}>
+      <div ref={scrollRef} id="chat-messages" style={{ overflowY: "scroll", backgroundImage: `url(${what})`, height: "calc(88vh - 20px)", padding: "10px 0" }}>
+        {receiverMessages?.map((msg, index) => (
+          <div key={index} style={{ display: "flex", justifyContent: msg?.senderId === userProfile?.userId ? "flex-end" : "flex-start", margin: "5px" }}>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", maxWidth: "60%", margin: "2px 10px", padding: "10px", borderRadius: "10px", background: msg.senderId === userProfile?.userId ? "#DCF8C6" : "#FFF", color: "#000", boxShadow: "0 1px 1px rgba(0, 0, 0, 0.1)", wordBreak: "break-word" }}>
+              <p style={{ fontSize: "15px", margin: "0" }}>{msg?.content}</p> 
+              <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center" }}>
+                <p style={{ margin: "0 5px", fontSize: "12px", color: "#555" }}>{formatTimestamp(msg.createdAt)}</p>
+                {/* {msg.senderId === userProfile?.userId &&
+                  (msg.status === "READ" ? (
+                    <DoneAllOutlinedIcon style={{ color: "#53bdeb", fontSize: "16px" }} />
+                  ) : msg.status === "DELIVERED" ? (
+                    <DoneAllOutlinedIcon style={{ fontSize: "16px" }} />
+                  ) : (
+                    <DoneOutlinedIcon style={{ fontSize: "16px" }} />
+                  ))} */}
+                  {msg?.senderId === userProfile?.userId && (
+                    msg?.status === "READ" ? <DoneAllOutlinedIcon style={{ color: "#53bdeb", fontSize: "16px" }} /> :
+                    msg?.status === "DELIVERED" ? <DoneAllOutlinedIcon style={{ fontSize: "16px" }} /> :
+                    msg?.status === "SENT" ? <DoneOutlinedIcon style={{ fontSize: "16px" }} /> : null
+                  )}
               </div>
             </div>
-          ))}
-        </div>
-
-        <div className="input-container" style={{ display: "flex", alignItems: "center", padding: "10px", backgroundColor: "#f0f0f0", borderTop: "1px solid #ccc",}}>
-          <input type="text" id="content" placeholder="Type your message..." value={userData?.message} onChange={handleMessageChange}
-            onKeyPress={(event) => handleKeyPress(event)}
-            style={{ flex: 1, padding: "10px", borderRadius: "20px", border: "1px solid #ddd", outline: "none",}}
-          />
-          <button onClick={sendMessage} style={{ marginLeft: "10px", padding: "10px 20px", borderRadius: "20px", border: "none", background: "#4CAF50", color: "#FFF", cursor: "pointer",}}>
-            Send
-          </button>
-        </div>
+          </div>
+        ))}
       </div>
+
+      <div className="input-container" style={{ display: "flex", alignItems: "center", padding: "10px", backgroundColor: "#f0f0f0", borderTop: "1px solid #ccc", }}>
+          {/* <EmojiPicker/> */}
+        <input type="text" id="content" placeholder="Type your message..." value={userData?.message} onChange={handleMessageChange}
+          onKeyPress={(event) => handleKeyPress(event)}
+          style={{ flex: 1, padding: "10px", borderRadius: "20px", border: "1px solid #ddd", outline: "none" }}
+        />
+        <button onClick={sendMessage} style={{ marginLeft: "10px", padding: "10px 20px", borderRadius: "20px", border: "none", background: "#4CAF50", color: "#FFF", cursor: "pointer" }}>
+          Send
+        </button>
+      </div>
+      <style jsx>{`
+          @media (max-width: 600px) {
+            .input-container {
+              height: 7vh;
+              margin-top: -3.5rem;
+            }
+          }
+        `}</style>
     </div>
   );
 }

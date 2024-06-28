@@ -3,7 +3,7 @@ import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 
 function Footer() {
   return (
-    <div
+    <div className="whatsapp-footer"
       style={{
         display: "flex",
         alignItems: "center",
@@ -18,6 +18,14 @@ function Footer() {
       <p style={{ marginLeft: "10px", fontSize: "20px" ,}}>
         Get WhatsApp for Windows
       </p>
+      <style jsx>{`
+        @media (max-width: 600px) {
+          .whatsapp-footer {
+            height: 7vh;
+            margin-top: -4rem;
+          }
+        }
+      `}</style>
     </div>
   );
 }

@@ -16,6 +16,7 @@
     "@videosdk.live/react-sdk": "^0.1.91",
     "axios": "^1.6.8",
     "crypto-js": "^4.2.0",
+    "emoji-picker-react": "^4.10.0",
     "firebase": "^10.10.0",
     "jwt-decode": "^4.0.0",
     "net": "^1.0.2",

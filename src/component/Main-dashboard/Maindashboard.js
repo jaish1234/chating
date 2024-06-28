@@ -177,8 +177,10 @@
 
 // export default Maindashboard;
 
+
+
+
 import React, { useState, useEffect } from "react";
-import { Box } from "@mui/material";
 import User from "../User-ui/User";
 import Chat from "../Window-ui/Chat";
 import Chatting from "../Window-ui/conversationpart/Chatting";
@@ -189,6 +191,7 @@ import Header from "../User-ui/Header";
 import Footer from "../User-ui/Footer";
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
+import { Box } from "@mui/material";
 
 function Maindashboard() {
   const [userData, setUserData] = useState({
@@ -198,8 +201,10 @@ function Maindashboard() {
     status: "",
     createdAt: ""  
   });
-  const [receiverMessages, setReceiverMessages] = useState([]);
   const [stompClient, setStompClient] = useState(null);
+  const [receiverMessages, setReceiverMessages] = useState([]);
+  const [peerConnection, setPeerConnection] = useState(null); // audiocall functionality
+  const [incomingCall, setIncomingCall] = useState(false); // audiocall functionality
   const [currentChat, setCurrentChat] = useState(false);
   const [selectedData, setSelectedData] = useState();
   const [user, setUser] = useState([]);
@@ -207,6 +212,10 @@ function Maindashboard() {
   const [currentConnectedUserId, setCurrentConnectedUserId] = useState(null);
   const token = localStorage.getItem("jwtToken");
   const decoded = jwtDecode(token);
+
+  // console.log("peerconnection : ", peerConnection);
+  // console.log("incoming call  : ", incomingCall);
+  // console.log("call data : ", callData);
 
   useEffect(() => {
     addUser();
@@ -262,11 +271,14 @@ function Maindashboard() {
         stomp.subscribe(`/user/${userProfile.userId}/topic/messages-seen`,
           (message) => onMessageSeen(message)
         );
+        // videocall and audiocall functionality
+        stomp.subscribe(`/user/${userProfile.userId}/topic/candidate`, (message) => handleCandidate(message))
+        stomp.subscribe(`/user/${userProfile.userId}/topic/call`, (message) => handleCall(message));
+        stomp.subscribe(`/user/${userProfile.userId}/topic/offer`, (message) => handleOffer(message))
+        stomp.subscribe(`/user/${userProfile?.userId}/topic/answer`, handleAnswer);
       });
     }
   };
-// console.log("user data log : ", userData);
-// console.log("reciverd message : ", receiverMessages);
 
   // const onMessageReceived = (message) => {
   //   const messageData = JSON.parse(message.body);
@@ -284,9 +296,9 @@ function Maindashboard() {
       senderId: msg.senderId,
       content: msg.content,
       messageId: msg.messageId,
-      // status: msg.senderId === userProfile?.userId ? msg.status : "DELIVERED",
-      status: msg.status,
-      timestamp: msg.createdAt,
+      status: msg.senderId === userProfile?.userId ? msg.status : "DELIVERED",
+      // status: msg.status,
+      createdAt: msg.createdAt,
     }))?.[0];
     if(newMessages?.senderId !== selectedData?.userId){
       setReceiverMessages((prevMessages) => [...prevMessages, newMessages]);
@@ -307,9 +319,59 @@ function Maindashboard() {
     const messageData = JSON.parse(message.body);
     // console.log("message data in seen : ", messageData?.messageIds);  
     setReceiverMessages((prevMessages) =>
-      prevMessages.map((msg) => msg.messageId === messageData?.messageIds ? { ...msg, status: "READ" } : msg)
+      prevMessages.map((msg) => { return msg.messageId === messageData?.messageIds ? { ...msg, status: "READ" } : msg })
     )
   }
+
+  const handleCandidate = (message) => {
+    const candidateData = JSON.stringify(message.body);
+    const candidate = new RTCIceCandidate(candidateData);
+    peerConnection.addIceCandidate(candidate).catch((e) => console.error("Error adding ICE candidate", e));
+  }
+
+  const handleCall = (message) => {
+    const callMessage = JSON.stringify(message.body);
+    setPeerConnection(callMessage); 
+    setIncomingCall(true);
+  }
+  
+  const handleOffer = async (message) => {
+    const offer = JSON.stringify(message.body);
+    const pc = createPeerConnection();
+    await pc.setRemoteDescription(new RTCSessionDescription(offer));  
+    const answer = await pc.createAnswer();
+    await pc.setLocalDescription(answer);
+    
+    stompClient.subscribe(`/user/${userProfile?.userId}/topic/answer`,{}, JSON.stringify(handleAnswer));
+  }
+
+  const handleAnswer = async (message) => {
+    const answer = JSON.stringify(message.body);
+    const desc = new RTCSessionDescription(answer);
+    await peerConnection.setRemoteDescription(desc);
+  }
+
+  const createPeerConnection = () => {
+    const pc = new RTCPeerConnection({
+      iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+    });
+    pc.onicecandidate = (event) => {
+      if (event.candidate) {
+        stompClient.send(`/app/candidate`, {}, JSON.stringify({ candidate: event.candidate, toUser: selectedData.userId, fromUser: userProfile.userId, answer: 'answer' }));
+      }
+    };
+    pc.ontrack = (event) => {
+      // Handle the remote stream here
+      const remoteStream = event.streams[0];
+      const videoElement = document.getElementById("remoteVideo");
+      if (videoElement) {
+        videoElement.srcObject = remoteStream;
+      }
+    };
+    setPeerConnection(pc);
+    return pc;
+  };
+
 
   const disconnectWebSocket = () => {
     const { stomp } = userData;
@@ -326,14 +388,12 @@ function Maindashboard() {
       <div style={{ overflowY: "hidden" }}>
         <Box sx={{ display: "flex" }}>
           <div style={{ width: "26rem" }}>
-            <Header userProfile={userProfile} />
+            <Header userProfile={userProfile}  />
             <User
               setCurrentChat={setCurrentChat}
               setSelectedData={setSelectedData}
               user={user}
-              userData={userData}
-              userProfile={userProfile}
-              selectedData={selectedData}
+              userProfile={userProfile} 
               connectWebSocket={connectWebSocket}
               receiverMessages={receiverMessages}
               setReceiverMessages={setReceiverMessages}
@@ -351,11 +411,17 @@ function Maindashboard() {
                 setUserData={setUserData}
                 receiverMessages={receiverMessages}
                 setReceiverMessages={setReceiverMessages}
+                setPeerConnection={setPeerConnection}
+                // callData={callData}
+                peerConnection={peerConnection}
+                incomingCall={incomingCall}
+                // setCallData={setCallData}
+                setIncomingCall={setIncomingCall}
               />
             ) : (
               <Chat />
             )}
-          </div>
+          </div> 
         </Box>
       </div>
     </>
